@@ -1,16 +1,63 @@
 spring:
   application:
     name: EduResolve
+
+  # ---------------------------------------------------------------------
+  # PostgreSQL connection
+  # Override any of these with environment variables (recommended for prod):
+  #   DB_URL, DB_USER, DB_PASSWORD
+  # ---------------------------------------------------------------------
   datasource:
-    url: jdbc:postgresql://localhost:5432/eduresolve
-    username: postgres
-    password: ForgeSt@ckk_1999
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/postgres}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:K1ngK0hl1@234}
     driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+      idle-timeout: 600000
+      pool-name: EduResolveHikariCP
 
   jpa:
     hibernate:
       ddl-auto: update   # options: none, update, create, create-drop
     show-sql: true
+    defer-datasource-initialization: true
+    open-in-view: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        jdbc:
+          time_zone: UTC
+
+  sql:
+    init:
+      mode: always
+      continue-on-error: true
+      # Default `data.sql` is auto-detected; we explicitly add `learning_seed.sql`
+      # so subjects / chapters / topics / content / PYQs all get populated on
+      # startup. Order matters - data.sql runs first (creates students etc.),
+      # then learning_seed.sql (creates the learning catalog).
+      data-locations:
+        - classpath:data.sql
+        - classpath:learning_seed.sql
+
+  # Spring Session JDBC: create the SPRING_SESSION + SPRING_SESSION_ATTRIBUTES
+  # tables on startup. Required because the spring-boot-starter-session-jdbc
+  # dependency is on the classpath. If you don't need server-side sessions at
+  # all, remove that dependency from pom.xml instead.
+  session:
+    jdbc:
+      initialize-schema: always
+      table-name: SPRING_SESSION
+    timeout: 30m
+
+server:
+  port: 8080
+
+logging:
+  level:
+    org.hibernate.SQL: INFO
+    org.springframework.jdbc.datasource.init.ScriptUtils: INFO
