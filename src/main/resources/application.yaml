@@ -54,10 +54,28 @@ spring:
       table-name: SPRING_SESSION
     timeout: 30m
 
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
 server:
   port: 8080
+
+# GitHub API Configuration
+github:
+  token: ${GITHUB_TOKEN:}
+  owner: ${GITHUB_OWNER:your-username}
+  repo: ${GITHUB_REPO:ncert-content}
+
+# OpenAI API Configuration
+openai:
+  api:
+    key: ${OPENAI_API_KEY:}
+    model: ${OPENAI_MODEL:gpt-3.5-turbo}
 
 logging:
   level:
     org.hibernate.SQL: INFO
     org.springframework.jdbc.datasource.init.ScriptUtils: INFO
+    com.forgeStackk.EduResolve: DEBUG
