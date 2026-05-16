@@ -5,6 +5,7 @@ import com.forgeStackk.EduResolve.entity.DoubtCache;
 import com.forgeStackk.EduResolve.repository.ContentChunkRepository;
 import com.forgeStackk.EduResolve.repository.DoubtCacheRepository;
 import com.forgeStackk.EduResolve.service.AiService;
+import com.forgeStackk.EduResolve.service.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,18 +23,19 @@ import java.util.Map;
  *   3. Else search ContentChunks (Postgres FTS). If a chunk matches, return
  *      it as the answer (source = DB) and cache it.
  *   4. Else, only as a last resort, call AiService.generateAnswer(...) and
- *      cache the response.
+ *      cache the response. Attach related images.
  *
  * 80-90% of student questions hit step 2 or 3 once content is curated.
  */
 @RestController
-@RequestMapping("/api/doubt-solver")
+@RequestMapping("/doubt-solver")
 @CrossOrigin(origins = "*")
 public class DoubtSolverController {
 
     @Autowired private DoubtCacheRepository cacheRepo;
     @Autowired private ContentChunkRepository contentRepo;
     @Autowired private AiService aiService;
+    @Autowired private ImageService imageService;
 
     @PostMapping("/ask")
     public Map<String, Object> ask(@RequestBody AskRequest req) {
@@ -48,7 +50,7 @@ public class DoubtSolverController {
             d.setHitCount(d.getHitCount() + 1);
             d.setLastHitAt(Instant.now());
             cacheRepo.save(d);
-            return result(d.getAnswer(), "cache", d.getSource(), d.getId());
+            return result(d.getAnswer(), "cache", d.getSource(), d.getId(), null);
         }
 
         // 2. DB content search (Postgres FTS)
@@ -57,14 +59,21 @@ public class DoubtSolverController {
             ContentChunk best = hits.get(0);
             String answer = (best.getTitle() != null ? best.getTitle() + ": " : "") + best.getBody();
             DoubtCache cache = saveCache(hash, normalized, answer, lang, req.subject, "DB");
-            return result(answer, "db", "DB", cache.getId());
+            return result(answer, "db", "DB", cache.getId(), null);
         }
 
         // 3. AI fallback (only when nothing else worked)
         String aiAnswer = aiService.generateAnswer(req.query, lang);
         String source = aiService.isEnabled() ? "AI" : "FALLBACK";
         DoubtCache cache = saveCache(hash, normalized, aiAnswer, lang, req.subject, source);
-        return result(aiAnswer, "ai", source, cache.getId());
+        
+        // Enhance AI response with educational images
+        List<String> images = imageService.getDirectImageUrls(req.query + " " + aiAnswer);
+        if (images.isEmpty()) {
+            images = imageService.generateImageUrls(req.query, aiAnswer);
+        }
+        
+        return result(aiAnswer, "ai", source, cache.getId(), images.isEmpty() ? null : images);
     }
 
     private DoubtCache saveCache(String hash, String normalized, String answer,
@@ -81,12 +90,15 @@ public class DoubtSolverController {
         return cacheRepo.save(c);
     }
 
-    private Map<String, Object> result(String answer, String hitType, String source, Long id) {
+    private Map<String, Object> result(String answer, String hitType, String source, Long id, List<String> images) {
         Map<String, Object> r = new HashMap<>();
         r.put("id", id);
         r.put("answer", answer);
         r.put("hitType", hitType);   // cache | db | ai
         r.put("source", source);     // DB | AI | FALLBACK | TEACHER
+        if (images != null && !images.isEmpty()) {
+            r.put("images", images);
+        }
         return r;
     }
 

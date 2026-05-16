@@ -19,7 +19,7 @@ import java.time.Instant;
 @NoArgsConstructor
 public class ContentChunk {
 
-    public enum ChunkType { SUMMARY, EXPLANATION, EXAMPLE, IMPORTANT_QA, FLASHCARD, ONE_PAGE_NOTE }
+    public enum ChunkType { SUMMARY, EXPLANATION, EXAMPLE, IMPORTANT_QA, FLASHCARD, ONE_PAGE_NOTE, DIAGRAM }
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -48,6 +48,10 @@ public class ContentChunk {
     /** Source PDF filename or admin user. */
     @Column(length = 255)
     private String source;
+
+    /** URL to diagram or image for this content chunk. */
+    @Column(length = 500)
+    private String imageUrl;
 
     @Column(name = "created_at", updatable = false)
     private Instant createdAt;

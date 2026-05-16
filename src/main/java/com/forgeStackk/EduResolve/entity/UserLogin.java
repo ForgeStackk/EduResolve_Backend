@@ -16,13 +16,19 @@ public class UserLogin {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 100)
-    private String name;
+    @Column(nullable = false, length = 50)
+    private String firstName;
+
+    @Column(nullable = false, length = 50)
+    private String lastName;
+
+    @Column(nullable = false, unique = true, length = 50)
+    private String username;
 
     @Column(length = 10)
     private String className;
 
-    @Column(nullable = false, unique = true, length = 100)
+    @Column(nullable = false, length = 100)
     private String email;
 
     @Column(nullable = false)
@@ -33,4 +39,7 @@ public class UserLogin {
 
     @Column(length = 20)
     private String phoneNumber;
+
+    @Column(length = 200)
+    private String schoolName;
 }

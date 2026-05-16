@@ -1,8 +1,12 @@
 package com.forgeStackk.EduResolve.controller;
 
+import com.forgeStackk.EduResolve.dto.ForgotPasswordRequest;
+import com.forgeStackk.EduResolve.dto.ForgotPasswordResponse;
 import com.forgeStackk.EduResolve.dto.LoginRequest;
 import com.forgeStackk.EduResolve.dto.LoginResponse;
 import com.forgeStackk.EduResolve.dto.RegisterRequest;
+import com.forgeStackk.EduResolve.dto.ResetPasswordRequest;
+import com.forgeStackk.EduResolve.dto.ResetPasswordResponse;
 import com.forgeStackk.EduResolve.service.UserLoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -44,5 +48,25 @@ public class UserLoginController {
     public ResponseEntity<String> logout() {
         // Logout is typically handled on the frontend by clearing tokens/session
         return ResponseEntity.ok("Logout successful! Session cleared.");
+    }
+
+    /**
+     * Forgot password endpoint
+     * POST /api/auth/forgot-password
+     */
+    @PostMapping("/forgot-password")
+    public ResponseEntity<ForgotPasswordResponse> forgotPassword(@RequestBody ForgotPasswordRequest request) {
+        ForgotPasswordResponse response = userLoginService.forgotPassword(request);
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Reset password endpoint
+     * POST /api/auth/reset-password
+     */
+    @PostMapping("/reset-password")
+    public ResponseEntity<ResetPasswordResponse> resetPassword(@RequestBody ResetPasswordRequest request) {
+        ResetPasswordResponse response = userLoginService.resetPassword(request);
+        return ResponseEntity.ok(response);
     }
 }

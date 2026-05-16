@@ -21,12 +21,14 @@ CREATE TABLE IF NOT EXISTS user_login (
     id            BIGSERIAL PRIMARY KEY,
     name          VARCHAR(100) NOT NULL,
     class_name    VARCHAR(10),
-    email         VARCHAR(100) UNIQUE NOT NULL,
+    email         VARCHAR(100) NOT NULL,   -- not unique: same email allowed across roles
     password      VARCHAR(255) NOT NULL,
     role          VARCHAR(20),
     phone_number  VARCHAR(20)
 );
 
+-- If upgrading an existing DB, drop the old unique constraint first:
+-- ALTER TABLE user_login DROP CONSTRAINT IF EXISTS user_login_email_key;
 CREATE INDEX IF NOT EXISTS idx_user_login_email ON user_login(email);
 CREATE INDEX IF NOT EXISTS idx_user_login_role  ON user_login(role);
 
@@ -188,6 +190,75 @@ CREATE INDEX IF NOT EXISTS idx_student_profile_user_id    ON student_profile(use
 CREATE INDEX IF NOT EXISTS idx_student_profile_class_name ON student_profile(class_name);
 
 
+-- ---------------------------------------------------------------------
+-- 10. teacher_profile
+--     Entity: TeacherProfile
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS teacher_profile (
+    id                BIGSERIAL PRIMARY KEY,
+    user_id           BIGINT,
+    name              VARCHAR(255) NOT NULL,
+    initials          VARCHAR(10),
+    color             VARCHAR(20),
+    employee_id       VARCHAR(50),
+    subject           VARCHAR(100),
+    department        VARCHAR(100),
+    qualification     VARCHAR(255),
+    experience_years  INTEGER,
+    class_name        VARCHAR(50),
+    joining_date      DATE,
+    status            VARCHAR(30)          -- active | inactive | on-leave
+);
+
+CREATE INDEX IF NOT EXISTS idx_teacher_profile_user_id    ON teacher_profile(user_id);
+CREATE INDEX IF NOT EXISTS idx_teacher_profile_subject    ON teacher_profile(subject);
+CREATE INDEX IF NOT EXISTS idx_teacher_profile_class_name ON teacher_profile(class_name);
+
+
+-- ---------------------------------------------------------------------
+-- 11. admin_profile
+--     Entity: AdminProfile
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS admin_profile (
+    id            BIGSERIAL PRIMARY KEY,
+    user_id       BIGINT,
+    name          VARCHAR(255) NOT NULL,
+    initials      VARCHAR(10),
+    color         VARCHAR(20),
+    employee_id   VARCHAR(50),
+    designation   VARCHAR(100),            -- principal | vice-principal | coordinator | etc.
+    department    VARCHAR(100),
+    joining_date  DATE,
+    access_level  VARCHAR(30),             -- full | limited
+    status        VARCHAR(30)              -- active | inactive
+);
+
+CREATE INDEX IF NOT EXISTS idx_admin_profile_user_id ON admin_profile(user_id);
+
+
+-- ---------------------------------------------------------------------
+-- 12. parents_profile
+--     Entity: ParentsProfile
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS parents_profile (
+    id            BIGSERIAL PRIMARY KEY,
+    user_id       BIGINT,
+    name          VARCHAR(255) NOT NULL,
+    initials      VARCHAR(10),
+    color         VARCHAR(20),
+    student_id    BIGINT,
+    student_name  VARCHAR(255),
+    class_name    VARCHAR(50),
+    relation      VARCHAR(30),             -- father | mother | guardian
+    occupation    VARCHAR(100),
+    status        VARCHAR(30)              -- active | inactive
+);
+
+CREATE INDEX IF NOT EXISTS idx_parents_profile_user_id    ON parents_profile(user_id);
+CREATE INDEX IF NOT EXISTS idx_parents_profile_student_id ON parents_profile(student_id);
+CREATE INDEX IF NOT EXISTS idx_parents_profile_class_name ON parents_profile(class_name);
+
+
 -- =====================================================================
 -- Optional foreign-key constraints (uncomment if you want strict FK
 -- enforcement at the DB level. Hibernate does NOT add these because the
@@ -198,6 +269,10 @@ CREATE INDEX IF NOT EXISTS idx_student_profile_class_name ON student_profile(cla
  ALTER TABLE complaint        ADD CONSTRAINT fk_complaint_parent FOREIGN KEY (parent_id)  REFERENCES user_login(id) ON DELETE SET NULL;
  ALTER TABLE fee              ADD CONSTRAINT fk_fee_student      FOREIGN KEY (student_id) REFERENCES user_login(id) ON DELETE CASCADE;
  ALTER TABLE student_profile  ADD CONSTRAINT fk_profile_user     FOREIGN KEY (user_id)    REFERENCES user_login(id) ON DELETE CASCADE;
+ ALTER TABLE teacher_profile  ADD CONSTRAINT fk_teacher_profile_user    FOREIGN KEY (user_id)    REFERENCES user_login(id) ON DELETE CASCADE;
+ ALTER TABLE admin_profile    ADD CONSTRAINT fk_admin_profile_user      FOREIGN KEY (user_id)    REFERENCES user_login(id) ON DELETE CASCADE;
+ ALTER TABLE parents_profile  ADD CONSTRAINT fk_parents_profile_user    FOREIGN KEY (user_id)    REFERENCES user_login(id) ON DELETE CASCADE;
+ ALTER TABLE parents_profile  ADD CONSTRAINT fk_parents_profile_student FOREIGN KEY (student_id) REFERENCES user_login(id) ON DELETE SET NULL;
 
 
 -- =====================================================================

@@ -34,15 +34,7 @@ spring:
 
   sql:
     init:
-      mode: always
-      continue-on-error: true
-      # Default `data.sql` is auto-detected; we explicitly add `learning_seed.sql`
-      # so subjects / chapters / topics / content / PYQs all get populated on
-      # startup. Order matters - data.sql runs first (creates students etc.),
-      # then learning_seed.sql (creates the learning catalog).
-      data-locations:
-        - classpath:data.sql
-        - classpath:learning_seed.sql
+      mode: never
 
   # Spring Session JDBC: create the SPRING_SESSION + SPRING_SESSION_ATTRIBUTES
   # tables on startup. Required because the spring-boot-starter-session-jdbc
@@ -62,17 +54,11 @@ spring:
 server:
   port: 8080
 
-# GitHub API Configuration
-github:
-  token: ${GITHUB_TOKEN:}
-  owner: ${GITHUB_OWNER:your-username}
-  repo: ${GITHUB_REPO:ncert-content}
-
 # OpenAI API Configuration
 openai:
   api:
-    key: ${OPENAI_API_KEY:}
-    model: ${OPENAI_MODEL:gpt-3.5-turbo}
+    key: ${OPENAI_API_KEY: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}
+    model: ${OPENAI_MODEL:gpt-4o-mini}
 
 logging:
   level:

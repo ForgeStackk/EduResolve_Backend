@@ -111,29 +111,37 @@ public class NcertBookController {
 
     @GetMapping("/books/{id}/pdf-content")
     public ResponseEntity<InputStreamResource> getPdfContent(@PathVariable Long id) {
+        NcertBook book = ncertBookService.getBookById(id);
+        if (book == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return servePdf(book);
+    }
+
+    @GetMapping("/class/{classGrade}/subject/{subject}/pdf-content")
+    public ResponseEntity<InputStreamResource> getPdfContentByClassAndSubject(
+            @PathVariable String classGrade,
+            @PathVariable String subject) {
+        List<NcertBook> books = ncertBookRepository.findByClassGradeAndSubject(classGrade, subject);
+        if (books.isEmpty()) {
+            log.error("No book found for class: {}, subject: {}", classGrade, subject);
+            return ResponseEntity.notFound().build();
+        }
+        return servePdf(books.get(0));
+    }
+
+    private ResponseEntity<InputStreamResource> servePdf(NcertBook book) {
         try {
-            NcertBook book = ncertBookService.getBookById(id);
-            if (book == null || book.getPdfFilename() == null) {
+            if (book.getPdfFilename() == null) {
+                log.error("No pdfFilename for book id={}", book.getId());
                 return ResponseEntity.notFound().build();
             }
 
-            // Construct PDF path
-            String pdfPath = book.getGithubPath();
-            if (pdfPath == null || pdfPath.isEmpty()) {
-                pdfPath = "NCERT/NCERT " + book.getClassGrade() + "th class/" + book.getSubject() + " book/" + book.getPdfFilename();
-            }
-
-            // Try to read from classpath
-            InputStream is = getClass().getClassLoader().getResourceAsStream(pdfPath);
+            InputStream is = resolveInputStream(book);
             if (is == null) {
-                // Try direct file path
-                File file = new File(pdfPath);
-                if (file.exists()) {
-                    is = new FileInputStream(file);
-                } else {
-                    log.error("PDF file not found: {}", pdfPath);
-                    return ResponseEntity.notFound().build();
-                }
+                log.error("PDF not found for book id={}, filename={}, githubPath={}",
+                        book.getId(), book.getPdfFilename(), book.getGithubPath());
+                return ResponseEntity.notFound().build();
             }
 
             HttpHeaders headers = new HttpHeaders();
@@ -145,8 +153,68 @@ public class NcertBookController {
                     .body(new InputStreamResource(is));
 
         } catch (IOException e) {
-            log.error("Error serving PDF for book ID: {}", id, e);
+            log.error("Error serving PDF for book id={}", book.getId(), e);
             return ResponseEntity.internalServerError().build();
         }
+    }
+
+    private InputStream resolveInputStream(NcertBook book) throws IOException {
+        // 1. Absolute filesystem path stored by GitHubApiService
+        String absPath = book.getGithubPath();
+        if (absPath != null && !absPath.isEmpty()) {
+            File f = new File(absPath);
+            if (f.exists()) {
+                log.info("Serving PDF from absolute path: {}", absPath);
+                return new FileInputStream(f);
+            }
+        }
+
+        // 2. Classpath resource — constructed from classGrade / subject / filename
+        String constructed = "NCERT/NCERT " + book.getClassGrade() + "th class/"
+                + book.getSubject() + " book/" + book.getPdfFilename();
+        InputStream is = getClass().getClassLoader().getResourceAsStream(constructed);
+        if (is != null) {
+            log.info("Serving PDF from classpath (constructed): {}", constructed);
+            return is;
+        }
+
+        // 3. Classpath resource — githubPath treated as classpath-relative
+        if (absPath != null && !absPath.isEmpty()) {
+            is = getClass().getClassLoader().getResourceAsStream(absPath);
+            if (is != null) {
+                log.info("Serving PDF from classpath (githubPath): {}", absPath);
+                return is;
+            }
+        }
+
+        // 4. Fallback: scan NCERT resource tree for a matching filename
+        try {
+            org.springframework.core.io.ClassPathResource base =
+                    new org.springframework.core.io.ClassPathResource("NCERT");
+            File baseDir = base.getFile();
+            if (baseDir.exists()) {
+                File found = findFile(baseDir, book.getPdfFilename());
+                if (found != null) {
+                    log.info("Serving PDF via filename scan: {}", found.getAbsolutePath());
+                    return new FileInputStream(found);
+                }
+            }
+        } catch (Exception ignored) {}
+
+        return null;
+    }
+
+    private File findFile(File dir, String filename) {
+        File[] children = dir.listFiles();
+        if (children == null) return null;
+        for (File child : children) {
+            if (child.isDirectory()) {
+                File found = findFile(child, filename);
+                if (found != null) return found;
+            } else if (child.getName().equalsIgnoreCase(filename)) {
+                return child;
+            }
+        }
+        return null;
     }
 }

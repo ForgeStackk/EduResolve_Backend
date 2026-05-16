@@ -104,7 +104,6 @@ public class NcertChapterController {
     }
     
     private List<NcertChapter> createAndSavePlaceholderChapters(Long bookId) {
-        // Create default chapters 1-8 as placeholder
         List<NcertChapter> chapters = java.util.stream.IntStream.rangeClosed(1, 8)
             .mapToObj(i -> {
                 NcertChapter chapter = new NcertChapter();
@@ -113,11 +112,12 @@ public class NcertChapterController {
                 chapter.setTitle("Chapter " + i);
                 chapter.setOrderIndex(i);
                 chapter.setSummary("Chapter content available in PDF");
+                // Estimate ~20 pages per chapter so the viewer opens at the right section
+                chapter.setStartPage((i - 1) * 20 + 1);
+                chapter.setEndPage(i * 20);
                 return chapter;
             })
             .toList();
-        
-        // Save to database
         return ncertChapterService.saveChapters(chapters);
     }
 
