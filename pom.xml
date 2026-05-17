@@ -96,22 +96,7 @@
 			<version>1.318</version>
 		</dependency>
 
-		<!-- OpenAI API Client -->
-		<dependency>
-			<groupId>io.github.openfeign</groupId>
-			<artifactId>feign-core</artifactId>
-			<version>13.2.1</version>
-		</dependency>
-		<dependency>
-			<groupId>io.github.openfeign</groupId>
-			<artifactId>feign-jackson</artifactId>
-			<version>13.2.1</version>
-		</dependency>
-		<dependency>
-			<groupId>com.theokanning.openai-gpt3-java</groupId>
-			<artifactId>service</artifactId>
-			<version>0.18.2</version>
-		</dependency>
+		<!-- OpenAI via Spring RestClient (no extra dependency needed) -->
 
 		<!-- Validation -->
 		<dependency>
