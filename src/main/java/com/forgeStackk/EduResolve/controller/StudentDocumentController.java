@@ -98,7 +98,7 @@ public class StudentDocumentController {
             @RequestParam Long studentId) {
         return docRepository.findById(id).map(doc -> {
             if (!doc.getStudentId().equals(studentId)) {
-                return ResponseEntity.status(403).<Void>build();
+                return ResponseEntity.status(403).build();
             }
             try { Files.deleteIfExists(Paths.get(doc.getFilePath())); } catch (IOException ignored) {}
             docRepository.delete(doc);

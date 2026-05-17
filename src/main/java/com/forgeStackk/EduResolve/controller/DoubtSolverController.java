@@ -1,128 +1,70 @@
 package com.forgeStackk.EduResolve.controller;
 
-import com.forgeStackk.EduResolve.entity.ContentChunk;
-import com.forgeStackk.EduResolve.entity.DoubtCache;
-import com.forgeStackk.EduResolve.repository.ContentChunkRepository;
-import com.forgeStackk.EduResolve.repository.DoubtCacheRepository;
-import com.forgeStackk.EduResolve.service.AiService;
-import com.forgeStackk.EduResolve.service.ImageService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.forgeStackk.EduResolve.service.OpenAIService;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.time.Instant;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-/**
- * Cost-aware doubt solver. Flow:
- *   1. Normalize the question + hash.
- *   2. Look up DoubtCache by hash. Hit -> increment counter, return.
- *   3. Else search ContentChunks (Postgres FTS). If a chunk matches, return
- *      it as the answer (source = DB) and cache it.
- *   4. Else, only as a last resort, call AiService.generateAnswer(...) and
- *      cache the response. Attach related images.
- *
- * 80-90% of student questions hit step 2 or 3 once content is curated.
- */
 @RestController
-@RequestMapping("/doubt-solver")
+@RequestMapping("/api/doubt-solver")
 @CrossOrigin(origins = "*")
+@RequiredArgsConstructor
+@Slf4j
 public class DoubtSolverController {
 
-    @Autowired private DoubtCacheRepository cacheRepo;
-    @Autowired private ContentChunkRepository contentRepo;
-    @Autowired private AiService aiService;
-    @Autowired private ImageService imageService;
+    private final OpenAIService openAIService;
 
     @PostMapping("/ask")
-    public Map<String, Object> ask(@RequestBody AskRequest req) {
-        String lang = req.language == null ? "en" : req.language;
-        String normalized = normalize(req.query);
-        String hash = sha256(normalized + "|" + lang);
-
-        // 1. Cache hit
-        var cached = cacheRepo.findByQueryHash(hash);
-        if (cached.isPresent()) {
-            DoubtCache d = cached.get();
-            d.setHitCount(d.getHitCount() + 1);
-            d.setLastHitAt(Instant.now());
-            cacheRepo.save(d);
-            return result(d.getAnswer(), "cache", d.getSource(), d.getId(), null);
-        }
-
-        // 2. DB content search (Postgres FTS)
-        List<ContentChunk> hits = contentRepo.search(normalized, lang);
-        if (!hits.isEmpty()) {
-            ContentChunk best = hits.get(0);
-            String answer = (best.getTitle() != null ? best.getTitle() + ": " : "") + best.getBody();
-            DoubtCache cache = saveCache(hash, normalized, answer, lang, req.subject, "DB");
-            return result(answer, "db", "DB", cache.getId(), null);
-        }
-
-        // 3. AI fallback (only when nothing else worked)
-        String aiAnswer = aiService.generateAnswer(req.query, lang);
-        String source = aiService.isEnabled() ? "AI" : "FALLBACK";
-        DoubtCache cache = saveCache(hash, normalized, aiAnswer, lang, req.subject, source);
-        
-        // Enhance AI response with educational images
-        List<String> images = imageService.getDirectImageUrls(req.query + " " + aiAnswer);
-        if (images.isEmpty()) {
-            images = imageService.generateImageUrls(req.query, aiAnswer);
-        }
-        
-        return result(aiAnswer, "ai", source, cache.getId(), images.isEmpty() ? null : images);
+    public ResponseEntity<DoubtAnswerResponse> ask(@RequestBody DoubtSolverRequest req) {
+        int classLevel = 9;
+        String answer = openAIService.generateClassAppropriateAnswer(
+                req.getQuery(), classLevel, req.getSubject(), null);
+        return ResponseEntity.ok(buildResponse(answer, "ai"));
     }
 
-    private DoubtCache saveCache(String hash, String normalized, String answer,
-                                 String lang, String subject, String source) {
-        DoubtCache c = new DoubtCache();
-        c.setQueryHash(hash);
-        c.setNormalizedQuery(normalized);
-        c.setAnswer(answer);
-        c.setLanguage(lang);
-        c.setSubject(subject);
-        c.setSource(source);
-        c.setHitCount(1);
-        c.setLastHitAt(Instant.now());
-        return cacheRepo.save(c);
+    @PostMapping("/image")
+    public ResponseEntity<DoubtAnswerResponse> image(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam(value = "query", defaultValue = "") String query,
+            @RequestParam(value = "subject", required = false) String subject,
+            @RequestParam(value = "studentId", required = false) Long studentId) {
+        try {
+            byte[] bytes = file.getBytes();
+            String mimeType = file.getContentType() != null ? file.getContentType() : "image/jpeg";
+            String answer = openAIService.generateAnswerWithImage(bytes, mimeType, query, 9, subject);
+            return ResponseEntity.ok(buildResponse(answer, "ai"));
+        } catch (Exception e) {
+            log.error("Image doubt processing failed", e);
+            return ResponseEntity.internalServerError()
+                    .body(buildResponse("Could not analyze the image. Please try again.", "fallback"));
+        }
     }
 
-    private Map<String, Object> result(String answer, String hitType, String source, Long id, List<String> images) {
-        Map<String, Object> r = new HashMap<>();
-        r.put("id", id);
-        r.put("answer", answer);
-        r.put("hitType", hitType);   // cache | db | ai
-        r.put("source", source);     // DB | AI | FALLBACK | TEACHER
-        if (images != null && !images.isEmpty()) {
-            r.put("images", images);
-        }
+    private DoubtAnswerResponse buildResponse(String answer, String hitType) {
+        DoubtAnswerResponse r = new DoubtAnswerResponse();
+        r.setId(System.currentTimeMillis());
+        r.setAnswer(answer);
+        r.setHitType(hitType);
+        r.setSource(hitType.equals("ai") ? "AI" : "FALLBACK");
         return r;
     }
 
-    private static String normalize(String q) {
-        if (q == null) return "";
-        return q.toLowerCase().trim().replaceAll("\\s+", " ");
+    @Data
+    public static class DoubtSolverRequest {
+        private String query;
+        private String language;
+        private String subject;
+        private Long studentId;
     }
 
-    private static String sha256(String s) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            byte[] hash = md.digest(s.getBytes(StandardCharsets.UTF_8));
-            StringBuilder sb = new StringBuilder(hash.length * 2);
-            for (byte b : hash) sb.append(String.format("%02x", b));
-            return sb.toString();
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
-    public static class AskRequest {
-        public String query;
-        public String subject;
-        public String language;
-        public Long studentId; // for future per-user rate limiting
+    @Data
+    public static class DoubtAnswerResponse {
+        private long id;
+        private String answer;
+        private String hitType;
+        private String source;
     }
 }

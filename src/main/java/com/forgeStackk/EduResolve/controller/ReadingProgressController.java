@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/reading-progress")
@@ -24,7 +23,8 @@ public class ReadingProgressController {
 
     @GetMapping("/student/{studentId}/latest")
     public ResponseEntity<ReadingProgress> getLatest(@PathVariable Long studentId) {
-        Optional<ReadingProgress> progress = readingProgressRepository.findFirstByStudentIdOrderByLastReadAtDesc(studentId);
-        return progress.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(
+            readingProgressRepository.findFirstByStudentIdOrderByLastReadAtDesc(studentId).orElse(null)
+        );
     }
 }

@@ -4,7 +4,8 @@ import com.forgeStackk.EduResolve.dto.AskDoubtRequest;
 import com.forgeStackk.EduResolve.dto.DoubtFeedbackRequest;
 import com.forgeStackk.EduResolve.entity.Doubt;
 import com.forgeStackk.EduResolve.repository.DoubtRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.forgeStackk.EduResolve.service.OpenAIService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,10 +14,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/doubts")
 @CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 public class DoubtController {
 
-    @Autowired
-    private DoubtRepository repo;
+    private final DoubtRepository repo;
+    private final OpenAIService openAIService;
 
     @GetMapping
     public List<Doubt> list(@RequestParam(required = false) Long studentId) {
@@ -30,7 +32,8 @@ public class DoubtController {
         d.setStudentId(req.getStudentId());
         d.setQuery(req.getQuery());
         d.setSubject(req.getSubject());
-        d.setAnswer(generateAnswer(req.getQuery()));
+        d.setAnswer(openAIService.generateClassAppropriateAnswer(
+                req.getQuery(), 9, req.getSubject(), null));
         return ResponseEntity.ok(repo.save(d));
     }
 
@@ -47,14 +50,5 @@ public class DoubtController {
         if (!repo.existsById(id)) return ResponseEntity.notFound().build();
         repo.deleteById(id);
         return ResponseEntity.noContent().build();
-    }
-
-    private String generateAnswer(String query) {
-        // Placeholder for AI integration. Returns structured guidance for now.
-        return "Here is a clear explanation for: \"" + query + "\".\n\n"
-                + "1. First, break down the core concept.\n"
-                + "2. Apply the relevant formulas or context.\n"
-                + "3. Arrive at the correct conclusion.\n\n"
-                + "Let me know if you need more details!";
     }
 }

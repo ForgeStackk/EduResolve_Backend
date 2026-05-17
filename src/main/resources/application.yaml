@@ -57,8 +57,12 @@ server:
 # OpenAI API Configuration
 openai:
   api:
-    key: ${OPENAI_API_KEY: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}
+    key:   ${OPENAI_API_KEY}
     model: ${OPENAI_MODEL:gpt-4o-mini}
+  chat:
+    max-tokens:      600
+    context-tokens:  6000
+    rate-per-minute: 20
 
 logging:
   level:

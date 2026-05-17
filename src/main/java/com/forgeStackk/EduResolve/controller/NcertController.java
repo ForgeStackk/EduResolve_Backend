@@ -224,14 +224,13 @@ public class NcertController {
      * Get 3D visualization data for a concept
      */
     @GetMapping("/concepts/{conceptId}/visual")
-    public ResponseEntity<OpenAIService.VisualizationData> getVisualization(@PathVariable String conceptId,
+    public ResponseEntity<String> getVisualization(@PathVariable String conceptId,
                                                                           @RequestParam int classLevel,
                                                                           @RequestParam String subject) {
         try {
-            OpenAIService.VisualizationData visualization = openAIService.generateVisualizationData(
-                conceptId, classLevel, subject
-            );
-            return ResponseEntity.ok(visualization);
+            // Fallback: Return a descriptive prompt for the 3D viewer since visualization service is pending
+            String prompt = String.format("Generate 3D visualization data for concept: %s, Class: %d, Subject: %s", conceptId, classLevel, subject);
+            return ResponseEntity.ok(prompt);
         } catch (Exception e) {
             log.error("Error generating visualization for concept: {}", conceptId, e);
             return ResponseEntity.internalServerError().build();
