@@ -1,7 +1,10 @@
 package com.forgeStackk.EduResolve.controller;
 
+import com.forgeStackk.EduResolve.entity.NcertChapter;
 import com.forgeStackk.EduResolve.entity.QuestionBank;
+import com.forgeStackk.EduResolve.repository.NcertChapterRepository;
 import com.forgeStackk.EduResolve.repository.QuestionBankRepository;
+import com.forgeStackk.EduResolve.service.AiService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +19,8 @@ import java.util.stream.Collectors;
 public class QuizController {
 
     private final QuestionBankRepository questionBankRepository;
+    private final NcertChapterRepository ncertChapterRepository;
+    private final AiService aiService;
 
     @PostMapping("/generate")
     public ResponseEntity<List<QuestionBank>> generateQuiz(@RequestBody QuizRequest request) {
@@ -29,10 +34,16 @@ public class QuizController {
             questions = questionBankRepository.findRandomQuestionsByChapterRange(request.getMaxChapterId());
         }
 
-        // Limit to requested count
         List<QuestionBank> limitedQuestions = questions.stream()
                 .limit(request.getCount())
                 .collect(Collectors.toList());
+
+        if (limitedQuestions.isEmpty()) {
+            String chapterInfo = ncertChapterRepository.findById(request.getMaxChapterId())
+                .map(ch -> ch.getTitle() + (ch.getSummary() != null ? ": " + ch.getSummary() : ""))
+                .orElse("NCERT chapter " + request.getMaxChapterId());
+            limitedQuestions = aiService.generateQuizQuestions(chapterInfo, request.getDifficulty(), request.getCount());
+        }
 
         return ResponseEntity.ok(limitedQuestions);
     }

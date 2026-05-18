@@ -23,4 +23,5 @@ public class LoginResponse {
     private Integer teacherId;
     private Integer adminId;
     private Integer parentId;
+    private String token;
 }

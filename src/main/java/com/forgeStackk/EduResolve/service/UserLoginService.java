@@ -17,6 +17,7 @@ import com.forgeStackk.EduResolve.repository.ParentsProfileRepository;
 import com.forgeStackk.EduResolve.repository.StudentProfileRepository;
 import com.forgeStackk.EduResolve.repository.TeacherProfileRepository;
 import com.forgeStackk.EduResolve.repository.UserLoginRepository;
+import com.forgeStackk.EduResolve.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -46,6 +47,9 @@ public class UserLoginService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     /**
      * Register a new user (first-time login)
@@ -166,6 +170,7 @@ public class UserLoginService {
         response.setSchoolName(user.getSchoolName());
         response.setSuccess(true);
         response.setMessage("Login successful!");
+        response.setToken(jwtUtil.generate(user.getId(), user.getRole()));
 
         return response;
     }

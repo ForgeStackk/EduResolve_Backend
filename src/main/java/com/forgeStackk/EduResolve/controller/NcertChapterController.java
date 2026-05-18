@@ -72,7 +72,14 @@ public class NcertChapterController {
             return ResponseEntity.ok(chapters);
         } catch (Exception e) {
             log.error("Error fetching chapters for book: {}", bookId, e);
-            return ResponseEntity.ok(createAndSavePlaceholderChapters(bookId));
+            try {
+                List<NcertChapter> existing = ncertChapterService.getChaptersByBookId(bookId);
+                if (!existing.isEmpty()) return ResponseEntity.ok(existing);
+                return ResponseEntity.ok(createAndSavePlaceholderChapters(bookId));
+            } catch (Exception fallback) {
+                log.error("Fallback chapter creation also failed for book: {}", bookId, fallback);
+                return ResponseEntity.ok(List.of());
+            }
         }
     }
     
@@ -104,6 +111,8 @@ public class NcertChapterController {
     }
     
     private List<NcertChapter> createAndSavePlaceholderChapters(Long bookId) {
+        List<NcertChapter> existing = ncertChapterService.getChaptersByBookId(bookId);
+        if (!existing.isEmpty()) return existing;
         List<NcertChapter> chapters = java.util.stream.IntStream.rangeClosed(1, 8)
             .mapToObj(i -> {
                 NcertChapter chapter = new NcertChapter();
@@ -112,7 +121,6 @@ public class NcertChapterController {
                 chapter.setTitle("Chapter " + i);
                 chapter.setOrderIndex(i);
                 chapter.setSummary("Chapter content available in PDF");
-                // Estimate ~20 pages per chapter so the viewer opens at the right section
                 chapter.setStartPage((i - 1) * 20 + 1);
                 chapter.setEndPage(i * 20);
                 return chapter;
