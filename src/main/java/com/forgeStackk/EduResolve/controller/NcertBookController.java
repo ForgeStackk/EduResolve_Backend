@@ -70,32 +70,57 @@ public class NcertBookController {
     public ResponseEntity<List<NcertBook>> getBooksByClassAndSubject(
             @RequestParam String classGrade,
             @RequestParam String subject) {
-        // First try to get from database
         List<NcertBook> books = ncertBookRepository.findByClassGradeAndSubject(classGrade, subject);
 
-        // If no books in database, fetch from filesystem and sync to DB
-        if (books.isEmpty()) {
-            log.info("No books found in database for class: {}, subject: {}. Fetching from filesystem...", classGrade, subject);
-            List<GitHubApiService.GitHubBookInfo> githubBooks = gitHubApiService.getBooks(classGrade, subject);
+        // Re-sync if DB is empty OR any record is stale (blank pdfFilename + githubPath is a dir with subdirs)
+        boolean needsResync = books.isEmpty() || books.stream().anyMatch(this::isStaleBookRecord);
 
+        if (needsResync) {
+            log.info("Re-syncing books for class: {}, subject: {} (stale or missing records)", classGrade, subject);
+
+            // Delete stale records so they don't block re-sync
+            books.stream().filter(this::isStaleBookRecord).forEach(b -> {
+                log.info("Deleting stale book record id={}, githubPath={}", b.getId(), b.getGithubPath());
+                ncertBookRepository.delete(b);
+            });
+
+            List<GitHubApiService.GitHubBookInfo> githubBooks = gitHubApiService.getBooks(classGrade, subject);
             if (!githubBooks.isEmpty()) {
-                // Convert GitHubBookInfo to NcertBook and save to DB
-                books = githubBooks.stream()
-                    .map(bookInfo -> {
-                        NcertBook book = new NcertBook();
-                        book.setClassGrade(classGrade);
-                        book.setSubject(subject);
-                        book.setTitle(bookInfo.getTitle());
-                        book.setPdfFilename(bookInfo.getFilename());
-                        book.setGithubPath(bookInfo.getPath());
-                        return ncertBookService.saveBook(book);
-                    })
-                    .toList();
-                log.info("Synced {} books from filesystem to database for class: {}, subject: {}", books.size(), classGrade, subject);
+                List<NcertBook> freshBooks = new ArrayList<>();
+                for (GitHubApiService.GitHubBookInfo bookInfo : githubBooks) {
+                    NcertBook book = ncertBookRepository.findByGithubPath(bookInfo.getPath())
+                        .orElseGet(() -> {
+                            NcertBook nb = new NcertBook();
+                            nb.setClassGrade(classGrade);
+                            nb.setSubject(subject);
+                            nb.setTitle(bookInfo.getTitle());
+                            nb.setPdfFilename(bookInfo.getFilename());
+                            nb.setGithubPath(bookInfo.getPath());
+                            return ncertBookService.saveBook(nb);
+                        });
+                    freshBooks.add(book);
+                }
+                log.info("Synced {} books from filesystem for class: {}, subject: {}", freshBooks.size(), classGrade, subject);
+                return ResponseEntity.ok(freshBooks);
             }
+
+            // Filesystem returned nothing — return whatever non-stale records remain
+            books = ncertBookRepository.findByClassGradeAndSubject(classGrade, subject);
         }
 
         return ResponseEntity.ok(books);
+    }
+
+    /** A record is stale when it has a blank pdfFilename but its githubPath points to a directory
+     *  that itself contains subdirectories (subject-level folder saved as a single book). */
+    private boolean isStaleBookRecord(NcertBook book) {
+        if (book.getPdfFilename() != null && !book.getPdfFilename().isBlank()) return false;
+        String path = book.getGithubPath();
+        if (path == null || path.isBlank()) return false;
+        File f = new File(path);
+        if (!f.exists() || !f.isDirectory()) return false;
+        File[] subdirs = f.listFiles(File::isDirectory);
+        return subdirs != null && subdirs.length > 0;
     }
 
     @GetMapping("/books/{id}")
@@ -173,8 +198,8 @@ public class NcertBookController {
 
     private ResponseEntity<InputStreamResource> servePdf(NcertBook book) {
         try {
-            if (book.getPdfFilename() == null) {
-                log.error("No pdfFilename for book id={}", book.getId());
+            if (book.getPdfFilename() == null || book.getPdfFilename().isBlank()) {
+                log.error("No pdfFilename for book id={} (folder-type book, not directly servable)", book.getId());
                 return ResponseEntity.notFound().build();
             }
 

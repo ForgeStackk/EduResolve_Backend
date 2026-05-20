@@ -31,6 +31,9 @@ public class StudentDocumentController {
             @RequestParam("file") MultipartFile file,
             @RequestParam("studentId") Long studentId) {
 
+        if (studentId == null || studentId <= 0) {
+            return ResponseEntity.badRequest().body("Invalid studentId");
+        }
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().body("No file provided");
         }
@@ -41,13 +44,20 @@ public class StudentDocumentController {
         }
 
         try {
-            Path dir = Paths.get(UPLOAD_ROOT, String.valueOf(studentId));
+            // Tomcat 11 routes both transferTo(File) and transferTo(Path) through
+            // Part.write(), which always prepends its own work directory when it
+            // receives a relative path — even after toAbsolutePath().
+            // Bypass transferTo entirely: stream the bytes directly via Files.copy.
+            Path dir = Paths.get(UPLOAD_ROOT, String.valueOf(studentId))
+                            .toAbsolutePath().normalize();
             Files.createDirectories(dir);
 
-            // Avoid filename collisions
-            String safeName = System.currentTimeMillis() + "_" + originalName.replaceAll("[^a-zA-Z0-9._-]", "_");
+            String safeName = System.currentTimeMillis() + "_"
+                    + originalName.replaceAll("[^a-zA-Z0-9._-]", "_");
             Path dest = dir.resolve(safeName);
-            file.transferTo(dest.toFile());
+            try (var in = file.getInputStream()) {
+                Files.copy(in, dest, StandardCopyOption.REPLACE_EXISTING);
+            }
 
             StudentDocument doc = new StudentDocument();
             doc.setStudentId(studentId);
