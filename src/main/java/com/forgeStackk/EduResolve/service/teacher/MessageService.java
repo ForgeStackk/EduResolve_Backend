@@ -45,6 +45,7 @@ public class MessageService {
     private final StudentInboxRepository studentInboxRepo;
     private final ParentInboxRepository parentInboxRepo;
     private final AttendanceRepository attendanceRepo;
+    private final ClassRoomRepository classRoomRepo;
     private final TeacherRepository teacherRepo;
     private final SimpMessagingTemplate ws;
 
@@ -59,6 +60,7 @@ public class MessageService {
             String textBody,
             boolean isHomework,
             LocalDate homeworkDueDate,
+            LocalDate attendanceDate,
             MultipartFile voiceNote,
             List<MultipartFile> images,
             List<MultipartFile> files) {
@@ -96,14 +98,16 @@ public class MessageService {
             log.error("Failed to save attachment for message {}: {}", saved.getMessageId(), e.getMessage());
         }
         if (!attachments.isEmpty()) {
-            attachmentRepo.saveAll(attachments);
+            // Add to message's owned collection so @JoinColumn writes message_id FK via cascade
+            saved.getAttachments().addAll(attachments);
+            messageRepo.save(saved);
         }
 
         // Steps 3-5: fan-out → inbox rows + WebSocket push
         String senderName = teacherRepo.findById(teacherId)
                 .map(Teacher::getFullName)
                 .orElse("Teacher");
-        int deliveredTo = fanOut(saved, senderName);
+        int deliveredTo = fanOut(saved, senderName, attendanceDate);
 
         return new SendMessageResponse(saved.getMessageId(), saved.getSentAt(), deliveredTo);
     }
@@ -131,8 +135,8 @@ public class MessageService {
      *
      * @return total number of students reached
      */
-    private int fanOut(Message msg, String senderName) {
-        List<Student> students = resolveRecipients(msg);
+    private int fanOut(Message msg, String senderName, LocalDate attendanceDate) {
+        List<Student> students = resolveRecipients(msg, attendanceDate);
         if (students.isEmpty()) {
             return 0;
         }
@@ -177,19 +181,24 @@ public class MessageService {
 
     // ── Recipient resolution ──────────────────────────────────────────────────
 
-    private List<Student> resolveRecipients(Message msg) {
+    private List<Student> resolveRecipients(Message msg, LocalDate attendanceDate) {
         return switch (msg.getRecipientType()) {
             case CLASS -> studentRepo.findByClassIdAndStatus(msg.getTargetClassId(), StudentStatus.ACTIVE);
-            case ABSENT_GUARDIANS -> resolveAbsentStudents(msg.getTargetClassId());
+            case ABSENT_GUARDIANS -> resolveAbsentStudents(msg.getTargetClassId(), attendanceDate);
             // INDIVIDUAL_STUDENT / INDIVIDUAL_PARENT handled at a higher level;
             // fan-out for those is a no-op here (direct delivery via specific student/parent id).
             default -> List.of();
         };
     }
 
-    private List<Student> resolveAbsentStudents(UUID classId) {
+    private List<Student> resolveAbsentStudents(UUID classId, LocalDate date) {
+        LocalDate lookupDate = (date != null) ? date : LocalDate.now();
+        String classLabel = classRoomRepo.findById(classId)
+                .map(cr -> cr.getClassName().replace("Class ", "") + cr.getSection())
+                .orElseThrow(() -> new java.util.NoSuchElementException("Classroom not found: " + classId));
+
         Set<UUID> absentIds = attendanceRepo
-                .findByClassIdAndDate(classId, LocalDate.now())
+                .findByClassIdAndDate(classLabel, lookupDate)
                 .stream()
                 .filter(a -> a.getStatus() == AttendanceStatus.ABSENT)
                 .map(Attendance::getStudentId)

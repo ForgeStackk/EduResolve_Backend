@@ -11,6 +11,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class MarkAttendanceRequest {
     private UUID classId;
+    private String classLabel;
     private LocalDate date;
     private List<AttendanceRecordInput> records;
 }

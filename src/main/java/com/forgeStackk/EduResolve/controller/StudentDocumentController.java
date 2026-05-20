@@ -93,7 +93,7 @@ public class StudentDocumentController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(
+    public ResponseEntity<?> delete(
             @PathVariable Long id,
             @RequestParam Long studentId) {
         return docRepository.findById(id).map(doc -> {
@@ -102,7 +102,7 @@ public class StudentDocumentController {
             }
             try { Files.deleteIfExists(Paths.get(doc.getFilePath())); } catch (IOException ignored) {}
             docRepository.delete(doc);
-            return ResponseEntity.<Void>noContent().build();
+            return ResponseEntity.ok().build();
         }).orElse(ResponseEntity.notFound().build());
     }
 }

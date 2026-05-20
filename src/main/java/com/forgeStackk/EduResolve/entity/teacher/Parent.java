@@ -31,6 +31,9 @@ public class Parent {
     @Column(nullable = false, length = 20)
     private String phone;
 
+    @Column(name = "user_id")
+    private Long userId;
+
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "parent_id")
     @ToString.Exclude

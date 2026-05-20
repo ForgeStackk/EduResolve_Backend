@@ -45,7 +45,7 @@ public class TeacherHomeworkController {
         UUID teacherId = authHelper.resolveTeacherId();
         SendMessageResponse response = messageService.send(
                 teacherId, targetClassId, targetSubjectId, recipientType,
-                textBody, true, homeworkDueDate, voiceNote, images, files);
+                textBody, true, homeworkDueDate, null, voiceNote, images, files);
         return ResponseEntity.ok(response);
     }
 

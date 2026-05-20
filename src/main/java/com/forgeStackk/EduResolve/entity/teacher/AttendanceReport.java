@@ -22,8 +22,8 @@ public class AttendanceReport {
     @Column(name = "report_id")
     private UUID reportId;
 
-    @Column(name = "class_id", nullable = false)
-    private UUID classId;
+    @Column(name = "class_id", nullable = false, length = 20)
+    private String classId;
 
     @Column(nullable = false)
     private Integer month;
@@ -45,8 +45,7 @@ public class AttendanceReport {
     @Column(nullable = false, length = 30)
     private ReportStatus status = ReportStatus.GENERATED;
 
-    // Stored as JSONB: { totalWorkingDays: int, studentWiseSummary: [...] }
-    @Column(columnDefinition = "jsonb")
+    @Column(columnDefinition = "TEXT")
     private String summary;
 
     @PrePersist

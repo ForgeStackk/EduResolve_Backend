@@ -14,10 +14,10 @@ import java.util.UUID;
 
 @Repository
 public interface AttendanceRepository extends JpaRepository<Attendance, UUID> {
-    List<Attendance> findByClassIdAndDate(UUID classId, LocalDate date);
-    Optional<Attendance> findByClassIdAndStudentIdAndDate(UUID classId, UUID studentId, LocalDate date);
+    List<Attendance> findByClassIdAndDate(String classId, LocalDate date);
+    Optional<Attendance> findByClassIdAndStudentIdAndDate(String classId, UUID studentId, LocalDate date);
     List<Attendance> findByStudentIdAndDateBetween(UUID studentId, LocalDate from, LocalDate to);
-    List<Attendance> findByClassIdAndDateBetween(UUID classId, LocalDate from, LocalDate to);
+    List<Attendance> findByClassIdAndDateBetween(String classId, LocalDate from, LocalDate to);
 
     @Query("SELECT COUNT(a) FROM Attendance a WHERE a.studentId = :studentId AND a.status = :status AND a.date BETWEEN :from AND :to")
     long countByStudentIdAndStatusAndDateBetween(

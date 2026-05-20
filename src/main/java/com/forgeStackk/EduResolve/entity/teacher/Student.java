@@ -36,4 +36,7 @@ public class Student {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private StudentStatus status = StudentStatus.ACTIVE;
+
+    @Column(name = "user_id")
+    private Long userId;
 }

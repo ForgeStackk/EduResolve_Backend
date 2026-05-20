@@ -12,11 +12,20 @@ import com.forgeStackk.EduResolve.entity.ParentsProfile;
 import com.forgeStackk.EduResolve.entity.StudentProfile;
 import com.forgeStackk.EduResolve.entity.TeacherProfile;
 import com.forgeStackk.EduResolve.entity.UserLogin;
+import com.forgeStackk.EduResolve.entity.teacher.ClassRoom;
+import com.forgeStackk.EduResolve.entity.teacher.Parent;
+import com.forgeStackk.EduResolve.entity.teacher.Student;
+import com.forgeStackk.EduResolve.entity.teacher.Teacher;
+import com.forgeStackk.EduResolve.enums.TeacherStatus;
 import com.forgeStackk.EduResolve.repository.AdminProfileRepository;
 import com.forgeStackk.EduResolve.repository.ParentsProfileRepository;
 import com.forgeStackk.EduResolve.repository.StudentProfileRepository;
 import com.forgeStackk.EduResolve.repository.TeacherProfileRepository;
 import com.forgeStackk.EduResolve.repository.UserLoginRepository;
+import com.forgeStackk.EduResolve.repository.teacher.ClassRoomRepository;
+import com.forgeStackk.EduResolve.repository.teacher.ParentRepository;
+import com.forgeStackk.EduResolve.repository.teacher.StudentRepository;
+import com.forgeStackk.EduResolve.repository.teacher.TeacherRepository;
 import com.forgeStackk.EduResolve.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,6 +47,18 @@ public class UserLoginService {
 
     @Autowired
     private TeacherProfileRepository teacherProfileRepository;
+
+    @Autowired
+    private TeacherRepository teacherRepository;
+
+    @Autowired
+    private ClassRoomRepository classRoomRepository;
+
+    @Autowired
+    private ParentRepository parentRepository;
+
+    @Autowired
+    private StudentRepository studentRepository;
 
     @Autowired
     private AdminProfileRepository adminProfileRepository;
@@ -102,6 +123,24 @@ public class UserLoginService {
             // Create the role-specific profile row before returning success.
             setProfileId(response, savedUser);
 
+            // Parent: link tp_student.parent_id via Parent.students collection
+            if ("parent".equalsIgnoreCase(savedUser.getRole())
+                    && request.getStudentId() != null && !request.getStudentId().isBlank()) {
+                try {
+                    java.util.UUID studentUuid = java.util.UUID.fromString(request.getStudentId());
+                    parentRepository.findByUserId(savedUser.getId()).ifPresent(parent -> {
+                        studentRepository.findById(studentUuid).ifPresent(student -> {
+                            if (student.getParentId() == null) {
+                                parent.getStudents().add(student);
+                                parentRepository.save(parent);
+                            }
+                        });
+                    });
+                } catch (Exception e) {
+                    System.err.println("Warning: could not link parent to student: " + e.getMessage());
+                }
+            }
+
             response.setId(savedUser.getId());
             response.setFirstName(savedUser.getFirstName());
             response.setLastName(savedUser.getLastName());
@@ -113,6 +152,7 @@ public class UserLoginService {
             response.setSchoolName(savedUser.getSchoolName());
             response.setSuccess(true);
             response.setMessage("Registration successful!");
+            response.setToken(jwtUtil.generate(savedUser.getId(), savedUser.getRole()));
 
             return response;
         } catch (Exception e) {
@@ -200,7 +240,31 @@ public class UserLoginService {
         profile.setInitials(initials);
         profile.setClassName(user.getClassName());
 
-        return studentProfileRepository.save(profile);
+        StudentProfile saved = studentProfileRepository.save(profile);
+
+        // Also sync tp_student so the teacher portal (attendance, messaging) can see this student
+        if (user.getClassName() != null && !user.getClassName().trim().isEmpty()) {
+            String cn      = user.getClassName().trim();
+            String grade   = cn.replaceAll("[^0-9]", "");
+            String section = cn.replaceAll("[0-9]", "").toUpperCase();
+            java.util.Optional<ClassRoom> roomOpt = (!section.isEmpty())
+                    ? classRoomRepository.findByClassNameAndSection("Class " + grade, section)
+                    : classRoomRepository.findByClassName("Class " + grade).stream().findFirst();
+
+            roomOpt.ifPresent(room -> {
+                Student student = studentRepository.findByUserId(user.getId())
+                        .orElseGet(Student::new);
+                student.setUserId(user.getId());
+                student.setFullName(fullName);
+                student.setClassId(room.getClassId());
+                if (student.getRollNumber() == null || student.getRollNumber().isBlank()) {
+                    student.setRollNumber("S" + user.getId());
+                }
+                studentRepository.save(student);
+            });
+        }
+
+        return saved;
     }
 
     private TeacherProfile upsertTeacherProfile(UserLogin user) {
@@ -215,6 +279,38 @@ public class UserLoginService {
         profile.setClassName(user.getClassName());
         if (profile.getStatus() == null) {
             profile.setStatus("active");
+        }
+
+        // Also keep the Teacher entity (used by teacher-portal endpoints) in sync
+        Teacher teacher = teacherRepository.findByUserId(user.getId())
+                .orElseGet(Teacher::new);
+        teacher.setUserId(user.getId());
+        teacher.setFullName(fullName);
+        teacher.setEmail(user.getEmail());
+        if (user.getPhoneNumber() != null) teacher.setPhone(user.getPhoneNumber());
+        if (teacher.getStatus() == null) teacher.setStatus(TeacherStatus.ACTIVE);
+
+        // Link CT classroom from className (e.g. "9A", "10B", or legacy "9")
+        if (user.getClassName() != null && !user.getClassName().trim().isEmpty()) {
+            String cn      = user.getClassName().trim();
+            String grade   = cn.replaceAll("[^0-9]", "");
+            String section = cn.replaceAll("[0-9]", "").toUpperCase();
+            java.util.Optional<ClassRoom> room = (!section.isEmpty())
+                    ? classRoomRepository.findByClassNameAndSection("Class " + grade, section)
+                    : classRoomRepository.findByClassName("Class " + grade).stream().findFirst();
+            room.ifPresent(cr -> teacher.setClassTeacherOf(cr.getClassId()));
+        }
+
+        Teacher savedTeacher = teacherRepository.save(teacher);
+
+        // Back-link classroom → class_teacher_id
+        if (savedTeacher.getClassTeacherOf() != null) {
+            classRoomRepository.findById(savedTeacher.getClassTeacherOf()).ifPresent(room -> {
+                if (room.getClassTeacherId() == null) {
+                    room.setClassTeacherId(savedTeacher.getTeacherId());
+                    classRoomRepository.save(room);
+                }
+            });
         }
 
         return teacherProfileRepository.save(profile);
@@ -252,6 +348,14 @@ public class UserLoginService {
         if (profile.getStatus() == null) {
             profile.setStatus("active");
         }
+
+        // Also keep tp_parent in sync (used by parent-portal endpoints)
+        Parent parent = parentRepository.findByUserId(user.getId()).orElseGet(Parent::new);
+        parent.setUserId(user.getId());
+        parent.setFullName(fullName);
+        parent.setEmail(user.getEmail());
+        parent.setPhone(user.getPhoneNumber() != null ? user.getPhoneNumber() : "");
+        parentRepository.save(parent);
 
         return parentsProfileRepository.save(profile);
     }

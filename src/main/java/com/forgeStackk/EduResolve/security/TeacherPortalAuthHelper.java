@@ -1,5 +1,9 @@
 package com.forgeStackk.EduResolve.security;
 
+import com.forgeStackk.EduResolve.entity.UserLogin;
+import com.forgeStackk.EduResolve.entity.teacher.Teacher;
+import com.forgeStackk.EduResolve.enums.TeacherStatus;
+import com.forgeStackk.EduResolve.repository.UserLoginRepository;
 import com.forgeStackk.EduResolve.repository.teacher.TeacherRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,6 +19,7 @@ import java.util.UUID;
 public class TeacherPortalAuthHelper {
 
     private final TeacherRepository teacherRepo;
+    private final UserLoginRepository userLoginRepo;
 
     public UUID resolveTeacherId() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -23,8 +28,23 @@ public class TeacherPortalAuthHelper {
         }
         Long userId = (Long) auth.getPrincipal();
         return teacherRepo.findByUserId(userId)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.FORBIDDEN, "No teacher profile linked to this account"))
+                .orElseGet(() -> bootstrapTeacher(userId))
                 .getTeacherId();
+    }
+
+    // Creates a minimal Teacher row on first use for accounts that pre-date the
+    // teacher-portal feature (avoids requiring every teacher to re-login).
+    private Teacher bootstrapTeacher(Long userId) {
+        UserLogin user = userLoginRepo.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found"));
+        String fullName = ((user.getFirstName() == null ? "" : user.getFirstName())
+                + " " + (user.getLastName() == null ? "" : user.getLastName())).trim();
+        Teacher teacher = new Teacher();
+        teacher.setUserId(userId);
+        teacher.setFullName(fullName.isEmpty() ? user.getEmail() : fullName);
+        teacher.setEmail(user.getEmail());
+        if (user.getPhoneNumber() != null) teacher.setPhone(user.getPhoneNumber());
+        teacher.setStatus(TeacherStatus.ACTIVE);
+        return teacherRepo.save(teacher);
     }
 }

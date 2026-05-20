@@ -10,6 +10,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 
+
 @Entity
 @Table(
     name = "attendance",
@@ -28,8 +29,8 @@ public class Attendance {
     @Column(name = "attendance_id")
     private UUID attendanceId;
 
-    @Column(name = "class_id", nullable = false)
-    private UUID classId;
+    @Column(name = "class_id", nullable = false, length = 20)
+    private String classId;
 
     @Column(name = "student_id", nullable = false)
     private UUID studentId;

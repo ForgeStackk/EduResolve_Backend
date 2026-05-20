@@ -40,12 +40,13 @@ public class TeacherAttendanceController {
         }
     }
 
-    // GET /attendance/{classId}?date=YYYY-MM-DD
+    // GET /attendance/{classId}?date=YYYY-MM-DD&classLabel=9A
     @GetMapping("/{classId}")
     public ResponseEntity<List<AttendanceRecordResponse>> getByDate(
             @PathVariable UUID classId,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        return ResponseEntity.ok(attendanceService.getByClassAndDate(classId, date));
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @RequestParam(required = false) String classLabel) {
+        return ResponseEntity.ok(attendanceService.getByClassAndDate(classId, classLabel, date));
     }
 
     // PUT /attendance/update

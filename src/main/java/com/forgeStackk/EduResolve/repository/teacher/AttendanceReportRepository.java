@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @Repository
 public interface AttendanceReportRepository extends JpaRepository<AttendanceReport, UUID> {
-    List<AttendanceReport> findByClassIdOrderByYearDescMonthDesc(UUID classId);
-    Optional<AttendanceReport> findByClassIdAndMonthAndYear(UUID classId, Integer month, Integer year);
+    List<AttendanceReport> findByClassIdOrderByYearDescMonthDesc(String classId);
+    Optional<AttendanceReport> findByClassIdAndMonthAndYear(String classId, Integer month, Integer year);
     List<AttendanceReport> findByStatus(ReportStatus status);
 }

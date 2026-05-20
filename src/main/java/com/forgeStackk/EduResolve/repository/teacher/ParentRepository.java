@@ -11,4 +11,5 @@ import java.util.UUID;
 public interface ParentRepository extends JpaRepository<Parent, UUID> {
     Optional<Parent> findByEmail(String email);
     Optional<Parent> findByPhone(String phone);
+    Optional<Parent> findByUserId(Long userId);
 }

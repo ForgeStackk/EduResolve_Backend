@@ -39,6 +39,8 @@ public class TeacherMessagingController {
             @RequestParam(value = "isHomework", defaultValue = "false") boolean isHomework,
             @RequestParam(value = "homeworkDueDate", required = false)
                 @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate homeworkDueDate,
+            @RequestParam(value = "attendanceDate", required = false)
+                @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate attendanceDate,
             @RequestPart(value = "voiceNote", required = false) MultipartFile voiceNote,
             @RequestPart(value = "images", required = false) List<MultipartFile> images,
             @RequestPart(value = "files", required = false) List<MultipartFile> files) {
@@ -46,7 +48,7 @@ public class TeacherMessagingController {
         UUID teacherId = authHelper.resolveTeacherId();
         SendMessageResponse response = messageService.send(
                 teacherId, targetClassId, targetSubjectId, recipientType,
-                textBody, isHomework, homeworkDueDate, voiceNote, images, files);
+                textBody, isHomework, homeworkDueDate, attendanceDate, voiceNote, images, files);
         return ResponseEntity.ok(response);
     }
 

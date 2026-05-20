@@ -18,4 +18,6 @@ public class RegisterRequest {
     private String role;
     private String phoneNumber;
     private String schoolName;
+    /** UUID of tp_student — sent by parent at registration to link child. */
+    private String studentId;
 }

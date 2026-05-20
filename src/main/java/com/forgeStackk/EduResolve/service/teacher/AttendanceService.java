@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.forgeStackk.EduResolve.dto.teacher.*;
 import com.forgeStackk.EduResolve.entity.teacher.*;
 import com.forgeStackk.EduResolve.enums.*;
+import com.forgeStackk.EduResolve.entity.teacher.ClassRoom;
 import com.forgeStackk.EduResolve.repository.teacher.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,7 @@ public class AttendanceService {
 
     private final TeacherRepository teacherRepo;
     private final StudentRepository studentRepo;
+    private final ClassRoomRepository classRoomRepo;
     private final AttendanceRepository attendanceRepo;
     private final AttendanceReportRepository reportRepo;
     private final MessageRepository messageRepo;
@@ -33,12 +35,15 @@ public class AttendanceService {
     @Transactional
     public MarkAttendanceResponse mark(UUID teacherId, MarkAttendanceRequest req) {
         assertClassTeacher(teacherId, req.getClassId());
+        String classLabel = req.getClassLabel() != null && !req.getClassLabel().isBlank()
+                ? req.getClassLabel().toUpperCase()
+                : resolveClassLabel(req.getClassId());
 
         List<Attendance> toSave = req.getRecords().stream().map(r -> {
             Attendance a = attendanceRepo
-                    .findByClassIdAndStudentIdAndDate(req.getClassId(), r.getStudentId(), req.getDate())
+                    .findByClassIdAndStudentIdAndDate(classLabel, r.getStudentId(), req.getDate())
                     .orElse(new Attendance());
-            a.setClassId(req.getClassId());
+            a.setClassId(classLabel);
             a.setStudentId(r.getStudentId());
             a.setDate(req.getDate());
             a.setStatus(r.getStatus());
@@ -53,9 +58,12 @@ public class AttendanceService {
 
     // ── Get attendance for a class on a date ─────────────────────────────────
 
-    public List<AttendanceRecordResponse> getByClassAndDate(UUID classId, LocalDate date) {
+    public List<AttendanceRecordResponse> getByClassAndDate(UUID classId, String classLabel, LocalDate date) {
         List<Student> students = studentRepo.findByClassIdAndStatus(classId, StudentStatus.ACTIVE);
-        Map<UUID, Attendance> marked = attendanceRepo.findByClassIdAndDate(classId, date)
+        String label = (classLabel != null && !classLabel.isBlank())
+                ? classLabel.toUpperCase()
+                : resolveClassLabel(classId);
+        Map<UUID, Attendance> marked = attendanceRepo.findByClassIdAndDate(label, date)
                 .stream().collect(Collectors.toMap(Attendance::getStudentId, a -> a));
 
         return students.stream().map(s -> new AttendanceRecordResponse(
@@ -86,8 +94,9 @@ public class AttendanceService {
         LocalDate from = ym.atDay(1);
         LocalDate to = ym.atEndOfMonth();
 
+        String classLabel = resolveClassLabel(req.getClassId());
         List<Student> students = studentRepo.findByClassIdAndStatus(req.getClassId(), StudentStatus.ACTIVE);
-        List<Attendance> records = attendanceRepo.findByClassIdAndDateBetween(req.getClassId(), from, to);
+        List<Attendance> records = attendanceRepo.findByClassIdAndDateBetween(classLabel, from, to);
 
         Map<UUID, List<Attendance>> byStudent = records.stream()
                 .collect(Collectors.groupingBy(Attendance::getStudentId));
@@ -110,9 +119,9 @@ public class AttendanceService {
         AttendanceSummaryDto summaryDto = new AttendanceSummaryDto(workingDays.size(), summaries);
 
         AttendanceReport report = reportRepo
-                .findByClassIdAndMonthAndYear(req.getClassId(), req.getMonth(), req.getYear())
+                .findByClassIdAndMonthAndYear(classLabel, req.getMonth(), req.getYear())
                 .orElse(new AttendanceReport());
-        report.setClassId(req.getClassId());
+        report.setClassId(classLabel);
         report.setMonth(req.getMonth());
         report.setYear(req.getYear());
         report.setGeneratedBy(ReportGeneratedBy.TEACHER);
@@ -133,16 +142,17 @@ public class AttendanceService {
         boolean toStudents = req.getSendTo().contains("STUDENT_PORTAL");
         boolean toParents = req.getSendTo().contains("PARENT_PORTAL");
 
-        List<Student> students = studentRepo.findByClassIdAndStatus(report.getClassId(), StudentStatus.ACTIVE);
+        UUID classUUID = resolveClassUUID(report.getClassId());
+        List<Student> students = studentRepo.findByClassIdAndStatus(classUUID, StudentStatus.ACTIVE);
 
         for (Student student : students) {
             String body = buildReportText(report, student.getStudentId(), report.getSummary());
 
             if (toStudents) {
-                createReportMessage(teacherId, report.getClassId(), student.getStudentId(), body, RecipientType.INDIVIDUAL_STUDENT);
+                createReportMessage(teacherId, classUUID, student.getStudentId(), body, RecipientType.INDIVIDUAL_STUDENT);
             }
             if (toParents && student.getParentId() != null) {
-                createReportMessage(teacherId, report.getClassId(), student.getParentId(), body, RecipientType.INDIVIDUAL_PARENT);
+                createReportMessage(teacherId, classUUID, student.getParentId(), body, RecipientType.INDIVIDUAL_PARENT);
             }
         }
 
@@ -159,15 +169,16 @@ public class AttendanceService {
         reportRepo.findAll().stream()
                 .map(AttendanceReport::getClassId)
                 .distinct()
-                .forEach(classId -> {
+                .forEach(classLabel -> {
                     try {
+                        UUID classUUID = resolveClassUUID(classLabel);
                         GenerateReportRequest req = new GenerateReportRequest();
-                        req.setClassId(classId);
+                        req.setClassId(classUUID);
                         req.setMonth(month);
                         req.setYear(year);
                         generateReport(null, req);
                     } catch (Exception e) {
-                        log.error("Auto-report failed for class {}: {}", classId, e.getMessage());
+                        log.error("Auto-report failed for class {}: {}", classLabel, e.getMessage());
                     }
                 });
     }
@@ -175,9 +186,10 @@ public class AttendanceService {
     // ── Fetch a saved report ─────────────────────────────────────────────────
 
     public GenerateReportResponse getReport(UUID classId, Integer month, Integer year) {
-        AttendanceReport report = reportRepo.findByClassIdAndMonthAndYear(classId, month, year)
+        String classLabel = resolveClassLabel(classId);
+        AttendanceReport report = reportRepo.findByClassIdAndMonthAndYear(classLabel, month, year)
                 .orElseThrow(() -> new NoSuchElementException(
-                        "No report found for class=" + classId + " month=" + month + " year=" + year));
+                        "No report found for class=" + classLabel + " month=" + month + " year=" + year));
         AttendanceSummaryDto summary = fromJson(report.getSummary());
         return new GenerateReportResponse(report.getReportId(), report.getReportFileUrl(), summary);
     }
@@ -234,5 +246,21 @@ public class AttendanceService {
         if (toStudents && toParents) return ReportStatus.SENT_TO_STUDENTS;
         if (toParents) return ReportStatus.SENT_TO_PARENTS;
         return ReportStatus.SENT_TO_STUDENTS;
+    }
+
+    /** UUID → "9A" */
+    private String resolveClassLabel(UUID classId) {
+        return classRoomRepo.findById(classId)
+                .map(cr -> cr.getClassName().replace("Class ", "") + cr.getSection())
+                .orElseThrow(() -> new NoSuchElementException("Classroom not found for id: " + classId));
+    }
+
+    /** "9A" → UUID (reverse lookup) */
+    private UUID resolveClassUUID(String label) {
+        String grade = label.replaceAll("[^0-9]", "");
+        String section = label.replaceAll("[0-9]", "").toUpperCase();
+        return classRoomRepo.findByClassNameAndSection("Class " + grade, section)
+                .map(ClassRoom::getClassId)
+                .orElseThrow(() -> new NoSuchElementException("Classroom not found: " + label));
     }
 }

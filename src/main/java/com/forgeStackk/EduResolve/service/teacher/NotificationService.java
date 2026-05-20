@@ -31,14 +31,13 @@ public class NotificationService {
         TeacherNotification saved = notificationRepo.save(notification);
 
         try {
-            ws.convertAndSend(
-                    "/topic/notification/" + teacherId,
-                    Map.of(
+            String destination = "/topic/notification/" + teacherId;
+            Object payload = Map.of(
                             "notificationId", saved.getNotificationId().toString(),
                             "message", message,
                             "createdAt", saved.getCreatedAt().toString()
-                    )
             );
+            ws.convertAndSend(destination, payload);
         } catch (Exception e) {
             log.warn("WebSocket push failed for teacherId={}: {}", teacherId, e.getMessage());
         }

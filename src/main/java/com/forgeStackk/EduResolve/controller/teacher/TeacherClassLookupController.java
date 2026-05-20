@@ -30,6 +30,12 @@ public class TeacherClassLookupController {
         return ResponseEntity.ok(Map.of("teacherId", teacherId.toString()));
     }
 
+    // GET /all-classes — all grade 9-12 classrooms (for target-class picker)
+    @GetMapping("/all-classes")
+    public ResponseEntity<List<ClassResponse>> allClasses() {
+        return ResponseEntity.ok(classLookupService.getAllClasses());
+    }
+
     // GET /my-classes
     @GetMapping("/my-classes")
     public ResponseEntity<?> myClasses() {

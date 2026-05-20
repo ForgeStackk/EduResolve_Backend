@@ -18,9 +18,13 @@ import com.forgeStackk.EduResolve.repository.teacher.TeacherSubjectMappingReposi
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -33,17 +37,33 @@ public class ClassLookupService {
     private final ParentRepository parentRepo;
     private final SubjectRepository subjectRepo;
 
+    /** Returns all classrooms sorted by grade name then section. */
+    public List<ClassResponse> getAllClasses() {
+        return classRoomRepo.findAll().stream()
+                .sorted(java.util.Comparator
+                        .comparing(ClassRoom::getClassName)
+                        .thenComparing(cr -> cr.getSection() == null ? "" : cr.getSection()))
+                .map(cr -> new ClassResponse(cr.getClassId(), cr.getClassName(), cr.getSection(), false))
+                .toList();
+    }
+
     public List<ClassResponse> getMyClasses(UUID teacherId) {
         Teacher teacher = teacherRepo.findById(teacherId)
                 .orElseThrow(() -> new NoSuchElementException("Teacher not found: " + teacherId));
 
-        List<UUID> classIds = mappingRepo.findByTeacherId(teacherId).stream()
+        // Start with subject-mapping classes, preserving insertion order
+        Set<UUID> classIds = mappingRepo.findByTeacherId(teacherId).stream()
                 .map(m -> m.getClassId())
-                .distinct().toList();
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        // Always include the CT class even when no explicit subject mapping exists
+        if (teacher.getClassTeacherOf() != null) {
+            classIds.add(teacher.getClassTeacherOf());
+        }
 
         return classIds.stream()
                 .map(classRoomRepo::findById)
-                .filter(opt -> opt.isPresent())
+                .filter(Optional::isPresent)
                 .map(opt -> {
                     ClassRoom cr = opt.get();
                     boolean isCT = cr.getClassId().equals(teacher.getClassTeacherOf());
