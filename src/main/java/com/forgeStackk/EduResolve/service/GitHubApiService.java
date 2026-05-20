@@ -161,7 +161,25 @@ public class GitHubApiService {
                 return new ArrayList<>();
             }
 
-            // Get all PDF files in the subject directory
+            // If the subject directory contains subdirectories, each one is a separate book
+            // (e.g. class 10 English → "First Flight", "Footprints without feet", ...)
+            File[] subdirs = subjectDir.listFiles(File::isDirectory);
+            if (subdirs != null && subdirs.length > 0) {
+                return Arrays.stream(subdirs)
+                    .filter(d -> !d.getName().startsWith("."))
+                    .map(dir -> {
+                        GitHubBookInfo book = new GitHubBookInfo();
+                        book.setBookId(dir.getName());
+                        book.setTitle(dir.getName());
+                        book.setFilename("");  // empty = folder-type book (chapters inside)
+                        book.setPath(dir.getAbsolutePath());
+                        return book;
+                    })
+                    .sorted(java.util.Comparator.comparing(GitHubBookInfo::getTitle))
+                    .collect(Collectors.toList());
+            }
+
+            // No subdirectories — treat each PDF as a chapter/book directly
             File[] files = subjectDir.listFiles((dir, name) -> name.toLowerCase().endsWith(".pdf"));
             if (files == null) {
                 return new ArrayList<>();

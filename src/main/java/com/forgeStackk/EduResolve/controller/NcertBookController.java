@@ -16,6 +16,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 @RestController
@@ -100,6 +103,44 @@ public class NcertBookController {
         return ncertBookRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    /**
+     * Returns the list of chapter PDFs inside a folder-type book (pdfFilename="").
+     * Each chapter is auto-saved to ncert_book on first request so it gets a stable id
+     * that the pdf-content endpoint can serve.
+     */
+    @GetMapping("/books/{id}/chapter-pdfs")
+    public ResponseEntity<List<NcertBook>> getChapterPdfs(@PathVariable Long id) {
+        NcertBook book = ncertBookService.getBookById(id);
+        if (book == null) return ResponseEntity.notFound().build();
+
+        String folderPath = book.getGithubPath();
+        if (folderPath == null || folderPath.isBlank()) return ResponseEntity.ok(List.of());
+
+        File folder = new File(folderPath);
+        if (!folder.exists() || !folder.isDirectory()) return ResponseEntity.ok(List.of());
+
+        File[] pdfs = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(".pdf"));
+        if (pdfs == null || pdfs.length == 0) return ResponseEntity.ok(List.of());
+
+        Arrays.sort(pdfs, Comparator.comparing(File::getName));
+
+        List<NcertBook> chapters = new ArrayList<>();
+        for (File pdf : pdfs) {
+            NcertBook chapter = ncertBookRepository.findByGithubPath(pdf.getAbsolutePath())
+                .orElseGet(() -> {
+                    NcertBook c = new NcertBook();
+                    c.setClassGrade(book.getClassGrade());
+                    c.setSubject(book.getSubject());
+                    c.setTitle(formatChapterTitle(pdf.getName()));
+                    c.setPdfFilename(pdf.getName());
+                    c.setGithubPath(pdf.getAbsolutePath());
+                    return ncertBookService.saveBook(c);
+                });
+            chapters.add(chapter);
+        }
+        return ResponseEntity.ok(chapters);
     }
 
     @GetMapping("/books/{id}/pdf")
@@ -202,6 +243,10 @@ public class NcertBookController {
         } catch (Exception ignored) {}
 
         return null;
+    }
+
+    private String formatChapterTitle(String filename) {
+        return filename.replaceAll("(?i)\\.pdf$", "").replace("_", " ").trim();
     }
 
     private File findFile(File dir, String filename) {
