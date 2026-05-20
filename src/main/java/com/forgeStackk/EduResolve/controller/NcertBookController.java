@@ -70,49 +70,47 @@ public class NcertBookController {
     public ResponseEntity<List<NcertBook>> getBooksByClassAndSubject(
             @RequestParam String classGrade,
             @RequestParam String subject) {
-        List<NcertBook> books = ncertBookRepository.findByClassGradeAndSubject(classGrade, subject);
 
-        // Re-sync if DB is empty OR any record is stale (blank pdfFilename + githubPath is a dir with subdirs)
-        boolean needsResync = books.isEmpty() || books.stream().anyMatch(this::isStaleBookRecord);
+        // Always scan filesystem so missing DB records are detected and created.
+        // This is the only reliable way to catch the case where the DB has a subset
+        // of the books that actually exist on disk (e.g. Kshitij saved but Sparsh missing).
+        List<GitHubApiService.GitHubBookInfo> githubBooks = gitHubApiService.getBooks(classGrade, subject);
+        List<NcertBook> dbBooks = ncertBookRepository.findByClassGradeAndSubject(classGrade, subject);
 
-        if (needsResync) {
-            log.info("Re-syncing books for class: {}, subject: {} (stale or missing records)", classGrade, subject);
+        // Remove stale subject-level folder records (blank pdfFilename + path is a dir with subdirs).
+        dbBooks.stream().filter(this::isStaleBookRecord).forEach(b -> {
+            log.info("Deleting stale book record id={}, githubPath={}", b.getId(), b.getGithubPath());
+            ncertBookRepository.delete(b);
+        });
 
-            // Delete stale records so they don't block re-sync
-            books.stream().filter(this::isStaleBookRecord).forEach(b -> {
-                log.info("Deleting stale book record id={}, githubPath={}", b.getId(), b.getGithubPath());
-                ncertBookRepository.delete(b);
-            });
-
-            List<GitHubApiService.GitHubBookInfo> githubBooks = gitHubApiService.getBooks(classGrade, subject);
-            if (!githubBooks.isEmpty()) {
-                List<NcertBook> freshBooks = new ArrayList<>();
-                for (GitHubApiService.GitHubBookInfo bookInfo : githubBooks) {
-                    NcertBook book = ncertBookRepository.findByGithubPath(bookInfo.getPath())
-                        .orElseGet(() -> {
-                            NcertBook nb = new NcertBook();
-                            nb.setClassGrade(classGrade);
-                            nb.setSubject(subject);
-                            nb.setTitle(bookInfo.getTitle());
-                            nb.setPdfFilename(bookInfo.getFilename());
-                            nb.setGithubPath(bookInfo.getPath());
-                            return ncertBookService.saveBook(nb);
-                        });
-                    freshBooks.add(book);
-                }
-                log.info("Synced {} books from filesystem for class: {}, subject: {}", freshBooks.size(), classGrade, subject);
-                return ResponseEntity.ok(freshBooks);
-            }
-
-            // Filesystem returned nothing — return whatever non-stale records remain
-            books = ncertBookRepository.findByClassGradeAndSubject(classGrade, subject);
+        if (githubBooks.isEmpty()) {
+            // Nothing on filesystem — return whatever non-stale DB records remain.
+            return ResponseEntity.ok(
+                ncertBookRepository.findByClassGradeAndSubject(classGrade, subject)
+            );
         }
 
-        return ResponseEntity.ok(books);
+        // Upsert: ensure every filesystem book has a DB record. findByGithubPath prevents duplicates.
+        List<NcertBook> result = new ArrayList<>();
+        for (GitHubApiService.GitHubBookInfo bookInfo : githubBooks) {
+            NcertBook book = ncertBookRepository.findByGithubPath(bookInfo.getPath())
+                .orElseGet(() -> {
+                    NcertBook nb = new NcertBook();
+                    nb.setClassGrade(classGrade);
+                    nb.setSubject(subject);
+                    nb.setTitle(bookInfo.getTitle());
+                    nb.setPdfFilename(bookInfo.getFilename());
+                    nb.setGithubPath(bookInfo.getPath());
+                    return ncertBookService.saveBook(nb);
+                });
+            result.add(book);
+        }
+        log.info("Returning {} books for class={} subject={}", result.size(), classGrade, subject);
+        return ResponseEntity.ok(result);
     }
 
-    /** A record is stale when it has a blank pdfFilename but its githubPath points to a directory
-     *  that itself contains subdirectories (subject-level folder saved as a single book). */
+    /** A stale record has a blank pdfFilename and its githubPath is a directory that contains
+     *  subdirectories — i.e. a subject-level folder was saved as a single book by mistake. */
     private boolean isStaleBookRecord(NcertBook book) {
         if (book.getPdfFilename() != null && !book.getPdfFilename().isBlank()) return false;
         String path = book.getGithubPath();
@@ -149,7 +147,7 @@ public class NcertBookController {
         File[] pdfs = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(".pdf"));
         if (pdfs == null || pdfs.length == 0) return ResponseEntity.ok(List.of());
 
-        Arrays.sort(pdfs, Comparator.comparing(File::getName));
+        Arrays.sort(pdfs, Comparator.comparingInt(f -> extractChapterNumber(f.getName())));
 
         List<NcertBook> chapters = new ArrayList<>();
         for (File pdf : pdfs) {
@@ -268,6 +266,13 @@ public class NcertBookController {
         } catch (Exception ignored) {}
 
         return null;
+    }
+
+    /** Extract the first integer found in a filename for numeric sort.
+     *  "Chapter 10.pdf" → 10, "jehp109.pdf" → 109, "no-number.pdf" → MAX_VALUE */
+    private int extractChapterNumber(String filename) {
+        java.util.regex.Matcher m = java.util.regex.Pattern.compile("\\d+").matcher(filename);
+        return m.find() ? Integer.parseInt(m.group()) : Integer.MAX_VALUE;
     }
 
     private String formatChapterTitle(String filename) {

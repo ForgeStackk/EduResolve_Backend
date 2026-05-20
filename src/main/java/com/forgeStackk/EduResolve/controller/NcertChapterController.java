@@ -15,6 +15,8 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @RestController
@@ -32,12 +34,30 @@ public class NcertChapterController {
     public ResponseEntity<List<NcertChapter>> getChaptersByBook(@PathVariable Long bookId,
                                                                @RequestParam(required = false, defaultValue = "false") boolean refresh) {
         try {
+            // Folder-type books (pdfFilename blank) have no shared PDF — chapters are separate files.
+            // Return empty immediately so the client uses /chapter-pdfs instead.
+            NcertBook book = ncertBookService.getBookById(bookId);
+            if (book != null && (book.getPdfFilename() == null || book.getPdfFilename().isBlank())) {
+                log.info("Book {} is folder-type (pdfFilename blank). Returning empty chapters list.", bookId);
+                return ResponseEntity.ok(List.of());
+            }
+
             // First check if chapters exist in database
             List<NcertChapter> chapters = ncertChapterService.getChaptersByBookId(bookId);
             
             if (!chapters.isEmpty() && !refresh) {
+                // If any title is a raw NCERT file code (e.g. 'jehp109', 'iehdd101'),
+                // the extraction previously saved corrupted data — wipe and rebuild cleanly.
+                boolean hasRawCodes = chapters.stream()
+                    .anyMatch(c -> c.getTitle() != null && c.getTitle().matches("^[a-zA-Z][a-zA-Z0-9]{3,15}$"));
+                if (hasRawCodes) {
+                    log.info("Detected raw NCERT file codes in chapters for book {}. Rebuilding.", bookId);
+                    ncertChapterService.deleteChaptersByBookId(bookId);
+                    chapters = createAndSavePlaceholderChapters(bookId);
+                    return ResponseEntity.ok(sortedByChapterNumber(chapters));
+                }
                 log.info("Found {} chapters in database for book ID: {}", chapters.size(), bookId);
-                return ResponseEntity.ok(chapters);
+                return ResponseEntity.ok(sortedByChapterNumber(chapters));
             }
             
             // If refresh=true, delete existing chapters and re-extract
@@ -48,8 +68,7 @@ public class NcertChapterController {
             
             // If no chapters in DB, extract from PDF
             log.info("No chapters found in database for book ID: {}. Extracting from PDF...", bookId);
-            
-            NcertBook book = ncertBookService.getBookById(bookId);
+
             if (book == null) {
                 return ResponseEntity.notFound().build();
             }
@@ -69,13 +88,13 @@ public class NcertChapterController {
                 chapters = createAndSavePlaceholderChapters(bookId);
             }
             
-            return ResponseEntity.ok(chapters);
+            return ResponseEntity.ok(sortedByChapterNumber(chapters));
         } catch (Exception e) {
             log.error("Error fetching chapters for book: {}", bookId, e);
             try {
                 List<NcertChapter> existing = ncertChapterService.getChaptersByBookId(bookId);
-                if (!existing.isEmpty()) return ResponseEntity.ok(existing);
-                return ResponseEntity.ok(createAndSavePlaceholderChapters(bookId));
+                if (!existing.isEmpty()) return ResponseEntity.ok(sortedByChapterNumber(existing));
+                return ResponseEntity.ok(sortedByChapterNumber(createAndSavePlaceholderChapters(bookId)));
             } catch (Exception fallback) {
                 log.error("Fallback chapter creation also failed for book: {}", bookId, fallback);
                 return ResponseEntity.ok(List.of());
@@ -127,6 +146,15 @@ public class NcertChapterController {
             })
             .toList();
         return ncertChapterService.saveChapters(chapters);
+    }
+
+    /** Sort chapters numerically by chapterNumber (integer), falling back to orderIndex. */
+    private List<NcertChapter> sortedByChapterNumber(List<NcertChapter> chapters) {
+        List<NcertChapter> sorted = new ArrayList<>(chapters);
+        sorted.sort(Comparator.comparingInt(c ->
+            c.getChapterNumber() != null ? c.getChapterNumber()
+                                         : (c.getOrderIndex() != null ? c.getOrderIndex() : 0)));
+        return sorted;
     }
 
     @GetMapping("/chapters/{id}")
