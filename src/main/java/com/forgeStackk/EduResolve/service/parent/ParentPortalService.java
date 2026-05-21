@@ -124,6 +124,7 @@ public class ParentPortalService {
         return new StudentInboxItemDto(
                 inbox.getInboxId(),
                 msg.getMessageId(),
+                msg.getMsgNum(),
                 senderNames.getOrDefault(msg.getSenderId(), "Teacher"),
                 deriveCategory(msg),
                 msg.getTargetSubjectId(),

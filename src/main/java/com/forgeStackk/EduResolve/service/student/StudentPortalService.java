@@ -114,6 +114,7 @@ public class StudentPortalService {
         return new StudentInboxItemDto(
                 inbox.getInboxId(),
                 msg.getMessageId(),
+                msg.getMsgNum(),
                 senderNames.getOrDefault(msg.getSenderId(), "Teacher"),
                 deriveCategory(msg),
                 msg.getTargetSubjectId(),

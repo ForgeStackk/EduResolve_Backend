@@ -12,5 +12,6 @@ public interface TeacherSubjectMappingRepository extends JpaRepository<TeacherSu
     List<TeacherSubjectMapping> findByTeacherId(UUID teacherId);
     List<TeacherSubjectMapping> findByClassId(UUID classId);
     List<TeacherSubjectMapping> findByTeacherIdAndClassId(UUID teacherId, UUID classId);
+    List<TeacherSubjectMapping> findByClassIdAndSubjectId(UUID classId, Long subjectId);
     void deleteByTeacherIdAndClassIdAndSubjectId(UUID teacherId, UUID classId, Long subjectId);
 }

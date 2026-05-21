@@ -122,12 +122,18 @@ public class ClassroomSeeder implements ApplicationRunner {
             teacher.setClassTeacherOf(room.get().getClassId());
             teacherRepo.save(teacher);
 
-            // Back-link classroom → class_teacher_id
+            // Back-link classroom → class_teacher_id + stamp school_name
             ClassRoom cr = room.get();
+            boolean dirty = false;
             if (cr.getClassTeacherId() == null) {
                 cr.setClassTeacherId(teacher.getTeacherId());
-                classRoomRepo.save(cr);
+                dirty = true;
             }
+            if (cr.getSchoolName() == null && u.getSchoolName() != null) {
+                cr.setSchoolName(u.getSchoolName());
+                dirty = true;
+            }
+            if (dirty) classRoomRepo.save(cr);
             linked++;
         }
         if (linked > 0) {

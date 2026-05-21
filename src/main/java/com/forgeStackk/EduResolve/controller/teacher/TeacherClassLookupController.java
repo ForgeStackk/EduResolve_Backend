@@ -30,10 +30,11 @@ public class TeacherClassLookupController {
         return ResponseEntity.ok(Map.of("teacherId", teacherId.toString()));
     }
 
-    // GET /all-classes — all grade 9-12 classrooms (for target-class picker)
+    // GET /all-classes — classrooms scoped to the requesting teacher's school
     @GetMapping("/all-classes")
     public ResponseEntity<List<ClassResponse>> allClasses() {
-        return ResponseEntity.ok(classLookupService.getAllClasses());
+        String school = authHelper.resolveSchoolName();
+        return ResponseEntity.ok(classLookupService.getAllClasses(school));
     }
 
     // GET /my-classes
@@ -59,6 +60,7 @@ public class TeacherClassLookupController {
     @GetMapping("/class/{classId}/students")
     public ResponseEntity<List<StudentWithParentResponse>> studentsWithParents(
             @PathVariable UUID classId) {
-        return ResponseEntity.ok(classLookupService.getStudentsWithParents(classId));
+        String school = authHelper.resolveSchoolName();
+        return ResponseEntity.ok(classLookupService.getStudentsWithParents(classId, school));
     }
 }

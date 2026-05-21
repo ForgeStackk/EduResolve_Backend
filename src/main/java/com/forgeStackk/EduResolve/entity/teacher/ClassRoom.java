@@ -30,4 +30,7 @@ public class ClassRoom {
 
     @Column(name = "class_teacher_id")
     private UUID classTeacherId;
+
+    @Column(name = "school_name", length = 200)
+    private String schoolName;
 }

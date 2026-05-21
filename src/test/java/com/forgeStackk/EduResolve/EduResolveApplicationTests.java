@@ -5,13 +5,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import com.forgeStackk.EduResolve.service.OpenAIService;
 import com.forgeStackk.EduResolve.service.GitHubApiService;
+import com.forgeStackk.EduResolve.ai.service.OpenAiChatService;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.ActiveProfiles;
 
-@SpringBootTest
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
+@ActiveProfiles("test")
 class EduResolveApplicationTests {
 
-    // Mocking SimpMessagingTemplate prevents context loading failures 
-    // if a WebSocket broker configuration is not available during tests.
     @MockitoBean
     private SimpMessagingTemplate simpMessagingTemplate;
 
@@ -21,7 +24,17 @@ class EduResolveApplicationTests {
     @MockitoBean
     private GitHubApiService gitHubApiService;
 
+    @MockitoBean
+    private OpenAiChatService openAiChatService;
+
+    @MockitoBean
+    private com.fasterxml.jackson.databind.ObjectMapper objectMapper;
+
     @Test
     void contextLoads() {
+        assertNotNull(simpMessagingTemplate);
+        assertNotNull(openAIService);
+        assertNotNull(gitHubApiService);
+        assertNotNull(openAiChatService);
     }
 }

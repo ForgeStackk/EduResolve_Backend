@@ -37,9 +37,12 @@ public class ClassLookupService {
     private final ParentRepository parentRepo;
     private final SubjectRepository subjectRepo;
 
-    /** Returns all classrooms sorted by grade name then section. */
-    public List<ClassResponse> getAllClasses() {
-        return classRoomRepo.findAll().stream()
+    /** Returns all classrooms for the requesting teacher's school, sorted by grade then section. */
+    public List<ClassResponse> getAllClasses(String schoolName) {
+        List<ClassRoom> rooms = (schoolName != null && !schoolName.isBlank())
+                ? classRoomRepo.findBySchoolName(schoolName)
+                : classRoomRepo.findAll();
+        return rooms.stream()
                 .sorted(java.util.Comparator
                         .comparing(ClassRoom::getClassName)
                         .thenComparing(cr -> cr.getSection() == null ? "" : cr.getSection()))
@@ -81,7 +84,17 @@ public class ClassLookupService {
                 }).toList();
     }
 
-    public List<StudentWithParentResponse> getStudentsWithParents(UUID classId) {
+    public List<StudentWithParentResponse> getStudentsWithParents(UUID classId, String requestingSchool) {
+        // Verify the classroom belongs to the requesting teacher's school
+        classRoomRepo.findById(classId).ifPresent(cr -> {
+            if (requestingSchool != null && cr.getSchoolName() != null
+                    && !requestingSchool.equalsIgnoreCase(cr.getSchoolName())) {
+                throw new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.FORBIDDEN,
+                        "Cannot view students of a class from a different school");
+            }
+        });
+
         List<Student> students = studentRepo.findByClassIdAndStatus(classId, StudentStatus.ACTIVE);
         return students.stream().map(s -> {
             String parentName = null;

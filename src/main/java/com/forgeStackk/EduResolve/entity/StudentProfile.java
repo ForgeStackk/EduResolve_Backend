@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "student_profile")
 @Data
@@ -49,4 +51,11 @@ public class StudentProfile {
 
     @Column(name = "top_percentage")
     private Integer topPercentage;
+
+    @Column(name = "login_days")
+    private Integer loginDays;
+
+    /** Last calendar day (IST) on which a login was recorded — used for idempotent increment. */
+    @Column(name = "last_login_date")
+    private LocalDate lastLoginDate;
 }

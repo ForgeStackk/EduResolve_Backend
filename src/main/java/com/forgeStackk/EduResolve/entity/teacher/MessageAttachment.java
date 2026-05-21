@@ -20,8 +20,7 @@ public class MessageAttachment {
     @Column(name = "attachment_id")
     private UUID attachmentId;
 
-    // insertable/updatable=false: managed by Message's @JoinColumn
-    @Column(name = "message_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "message_id", nullable = false, updatable = false)
     private UUID messageId;
 
     @Enumerated(EnumType.STRING)

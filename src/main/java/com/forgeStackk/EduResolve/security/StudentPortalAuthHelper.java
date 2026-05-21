@@ -1,5 +1,7 @@
 package com.forgeStackk.EduResolve.security;
 
+import com.forgeStackk.EduResolve.entity.UserLogin;
+import com.forgeStackk.EduResolve.repository.UserLoginRepository;
 import com.forgeStackk.EduResolve.repository.teacher.StudentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,16 +17,36 @@ import java.util.UUID;
 public class StudentPortalAuthHelper {
 
     private final StudentRepository studentRepo;
+    private final UserLoginRepository userLoginRepo;
 
+    /** Returns the student's UUID (tp_student.student_id) — used by V4 inbox/attendance APIs. */
     public UUID resolveStudentId() {
+        return studentRepo.findByUserId(resolveRawUserId())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.FORBIDDEN, "No student profile linked to this account"))
+                .getStudentId();
+    }
+
+    /** Returns the user_login.id (BIGINT) — used by V9 submission and doubt APIs. */
+    public Long resolveUserLoginId() {
+        Long userId = resolveRawUserId();
+        studentRepo.findByUserId(userId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.FORBIDDEN, "No student profile linked to this account"));
+        return userId;
+    }
+
+    public String resolveSchoolName() {
+        return userLoginRepo.findById(resolveRawUserId())
+                .map(UserLogin::getSchoolName)
+                .orElse(null);
+    }
+
+    private Long resolveRawUserId() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !auth.isAuthenticated() || !(auth.getPrincipal() instanceof Long)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Not authenticated");
         }
-        Long userId = (Long) auth.getPrincipal();
-        return studentRepo.findByUserId(userId)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.FORBIDDEN, "No student profile linked to this account"))
-                .getStudentId();
+        return (Long) auth.getPrincipal();
     }
 }

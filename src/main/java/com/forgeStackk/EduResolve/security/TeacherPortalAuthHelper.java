@@ -22,14 +22,24 @@ public class TeacherPortalAuthHelper {
     private final UserLoginRepository userLoginRepo;
 
     public UUID resolveTeacherId() {
+        Long userId = resolveUserId();
+        return teacherRepo.findByUserId(userId)
+                .orElseGet(() -> bootstrapTeacher(userId))
+                .getTeacherId();
+    }
+
+    public String resolveSchoolName() {
+        return userLoginRepo.findById(resolveUserId())
+                .map(UserLogin::getSchoolName)
+                .orElse(null);
+    }
+
+    private Long resolveUserId() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !auth.isAuthenticated() || !(auth.getPrincipal() instanceof Long)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Not authenticated");
         }
-        Long userId = (Long) auth.getPrincipal();
-        return teacherRepo.findByUserId(userId)
-                .orElseGet(() -> bootstrapTeacher(userId))
-                .getTeacherId();
+        return (Long) auth.getPrincipal();
     }
 
     // Creates a minimal Teacher row on first use for accounts that pre-date the

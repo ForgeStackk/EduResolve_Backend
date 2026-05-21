@@ -10,6 +10,7 @@ import java.util.UUID;
 public record StudentInboxItemDto(
         UUID inboxId,
         UUID messageId,
+        Long msgNum,
         String senderName,
         MessageCategory category,
         Long targetSubjectId,

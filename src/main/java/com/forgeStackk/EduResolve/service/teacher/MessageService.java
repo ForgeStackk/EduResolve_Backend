@@ -3,21 +3,26 @@ package com.forgeStackk.EduResolve.service.teacher;
 import com.forgeStackk.EduResolve.dto.teacher.InboxNotificationPayload;
 import com.forgeStackk.EduResolve.dto.teacher.MessageSummaryResponse;
 import com.forgeStackk.EduResolve.dto.teacher.SendMessageResponse;
+import com.forgeStackk.EduResolve.entity.UserLogin;
 import com.forgeStackk.EduResolve.entity.teacher.*;
 import com.forgeStackk.EduResolve.enums.AttachmentFileType;
 import com.forgeStackk.EduResolve.enums.AttendanceStatus;
 import com.forgeStackk.EduResolve.enums.MessageContentType;
 import com.forgeStackk.EduResolve.enums.RecipientType;
 import com.forgeStackk.EduResolve.enums.StudentStatus;
+import com.forgeStackk.EduResolve.repository.UserLoginRepository;
 import com.forgeStackk.EduResolve.repository.teacher.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -35,7 +40,9 @@ import java.util.stream.Collectors;
 @Slf4j
 public class MessageService {
 
-    private static final String UPLOAD_ROOT = "uploads/teacher-messages";
+    @Value("${app.uploads.root:uploads/teacher-messages}")
+    private String uploadRoot;
+
     private static final int PREVIEW_LENGTH = 100;
 
     private final MessageRepository messageRepo;
@@ -47,6 +54,7 @@ public class MessageService {
     private final AttendanceRepository attendanceRepo;
     private final ClassRoomRepository classRoomRepo;
     private final TeacherRepository teacherRepo;
+    private final UserLoginRepository userLoginRepo;
     private final SimpMessagingTemplate ws;
 
     // ── Send ──────────────────────────────────────────────────────────────────
@@ -65,6 +73,9 @@ public class MessageService {
             List<MultipartFile> images,
             List<MultipartFile> files) {
 
+        // Guard: teacher and target classroom must belong to the same school
+        assertSameSchool(teacherId, targetClassId);
+
         // Step 1: persist the Message entity
         Message msg = new Message();
         msg.setSenderId(teacherId);
@@ -77,9 +88,9 @@ public class MessageService {
         msg.setContentType(resolveContentType(textBody, voiceNote, images, files));
         Message saved = messageRepo.save(msg);
 
-        // Step 2: persist attachments
+        // Step 2: persist attachments — all files must succeed or the whole send is rolled back
         List<MessageAttachment> attachments = new ArrayList<>();
-        Path dir = Paths.get(UPLOAD_ROOT, saved.getMessageId().toString());
+        Path dir = Paths.get(uploadRoot, saved.getMessageId().toString());
         try {
             if (hasFile(voiceNote)) {
                 attachments.add(saveFile(dir, saved.getMessageId(), voiceNote, AttachmentFileType.VOICE));
@@ -94,13 +105,13 @@ public class MessageService {
                     if (hasFile(f)) attachments.add(saveFile(dir, saved.getMessageId(), f, AttachmentFileType.DOCUMENT));
                 }
             }
+            if (!attachments.isEmpty()) {
+                attachmentRepo.saveAll(attachments);
+            }
         } catch (IOException e) {
-            log.error("Failed to save attachment for message {}: {}", saved.getMessageId(), e.getMessage());
-        }
-        if (!attachments.isEmpty()) {
-            // Add to message's owned collection so @JoinColumn writes message_id FK via cascade
-            saved.getAttachments().addAll(attachments);
-            messageRepo.save(saved);
+            log.error("Attachment upload failed for message {}: {}", saved.getMessageId(), e.getMessage());
+            cleanupPartialUploads(attachments, dir);
+            throw new RuntimeException("Attachment upload failed: " + e.getMessage(), e);
         }
 
         // Steps 3-5: fan-out → inbox rows + WebSocket push
@@ -222,6 +233,13 @@ public class MessageService {
 
     // ── File storage ──────────────────────────────────────────────────────────
 
+    private void cleanupPartialUploads(List<MessageAttachment> saved, Path dir) {
+        for (MessageAttachment a : saved) {
+            try { Files.deleteIfExists(Paths.get(a.getFileUrl())); } catch (IOException ignored) {}
+        }
+        try { Files.deleteIfExists(dir); } catch (IOException ignored) {}
+    }
+
     private MessageAttachment saveFile(Path dir, UUID messageId, MultipartFile file, AttachmentFileType type)
             throws IOException {
         Files.createDirectories(dir);
@@ -229,8 +247,8 @@ public class MessageService {
                 (file.getOriginalFilename() != null
                         ? file.getOriginalFilename().replaceAll("[^a-zA-Z0-9._-]", "_")
                         : "file");
-        Path dest = dir.resolve(safeName);
-        file.transferTo(dest.toFile());
+        Path dest = dir.resolve(safeName).toAbsolutePath();
+        file.transferTo(dest);
 
         MessageAttachment att = new MessageAttachment();
         att.setMessageId(messageId);
@@ -268,6 +286,27 @@ public class MessageService {
         return textBody.length() > PREVIEW_LENGTH
                 ? textBody.substring(0, PREVIEW_LENGTH) + "…"
                 : textBody;
+    }
+
+    // ── School isolation ──────────────────────────────────────────────────────
+
+    private void assertSameSchool(UUID teacherId, UUID targetClassId) {
+        if (targetClassId == null) return; // no classroom target — skip (individual recipient path)
+
+        String teacherSchool = teacherRepo.findById(teacherId)
+                .flatMap(t -> userLoginRepo.findById(t.getUserId()))
+                .map(UserLogin::getSchoolName)
+                .orElse(null);
+
+        String classSchool = classRoomRepo.findById(targetClassId)
+                .map(ClassRoom::getSchoolName)
+                .orElse(null);
+
+        if (teacherSchool != null && classSchool != null
+                && !teacherSchool.equalsIgnoreCase(classSchool)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "Cannot message a class that belongs to a different school");
+        }
     }
 
     private MessageSummaryResponse toSummary(Message m) {

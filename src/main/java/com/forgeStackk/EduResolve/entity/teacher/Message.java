@@ -26,6 +26,10 @@ public class Message {
     @Column(name = "message_id")
     private UUID messageId;
 
+    /** Sequence-based numeric ID — DB-generated, never set by application code. */
+    @Column(name = "msg_num", insertable = false, updatable = false)
+    private Long msgNum;
+
     @Column(name = "sender_id", nullable = false)
     private UUID senderId;
 
@@ -49,8 +53,8 @@ public class Message {
     @Column(name = "text_body", columnDefinition = "TEXT")
     private String textBody;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "message_id")
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "message_id", insertable = false, updatable = false)
     @ToString.Exclude
     private List<MessageAttachment> attachments = new ArrayList<>();
 

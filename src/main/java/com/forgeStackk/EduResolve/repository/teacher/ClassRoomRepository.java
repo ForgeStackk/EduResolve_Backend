@@ -15,4 +15,5 @@ public interface ClassRoomRepository extends JpaRepository<ClassRoom, UUID> {
     Optional<ClassRoom> findByClassNameAndSection(String className, String section);
     List<ClassRoom> findByClassTeacherId(UUID teacherId);
     List<ClassRoom> findByClassTeacherIdIsNotNull();
+    List<ClassRoom> findBySchoolName(String schoolName);
 }
