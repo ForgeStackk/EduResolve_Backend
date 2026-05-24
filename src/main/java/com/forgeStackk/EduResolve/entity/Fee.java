@@ -16,7 +16,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class Fee {
 
-    public enum Status { Paid, Unpaid }
+    public enum Status { Paid, Unpaid, Partial, Overdue, Waived }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,4 +46,16 @@ public class Fee {
 
     @Column(name = "last_reminder_at")
     private Instant lastReminderAt;
+
+    @Column(name = "paid_amount", precision = 10, scale = 2)
+    private BigDecimal paidAmount = BigDecimal.ZERO;
+
+    @Column(name = "paid_at")
+    private Instant paidAt;
+
+    @Column(name = "grade", length = 20)
+    private String grade;
+
+    @Column(name = "section", length = 5)
+    private String section;
 }

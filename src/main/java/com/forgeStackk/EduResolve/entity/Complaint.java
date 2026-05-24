@@ -14,7 +14,7 @@ import java.time.Instant;
 @AllArgsConstructor
 public class Complaint {
 
-    public enum Status { Pending, InReview, Resolved }
+    public enum Status { Pending, InReview, Resolved, Closed }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,6 +35,24 @@ public class Complaint {
     @Enumerated(EnumType.STRING)
     @Column(length = 20, nullable = false)
     private Status status = Status.Pending;
+
+    @Column(length = 20)
+    private String priority = "medium";
+
+    @Column(name = "raised_by_name", length = 255)
+    private String raisedByName;
+
+    @Column(name = "raised_by_role", length = 20)
+    private String raisedByRole;
+
+    @Column(name = "sla_due_at")
+    private Instant slaDueAt;
+
+    @Column(name = "resolved_at")
+    private Instant resolvedAt;
+
+    @Column(name = "assignee_name", length = 255)
+    private String assigneeName;
 
     @Column(name = "created_at", updatable = false)
     private Instant createdAt;
