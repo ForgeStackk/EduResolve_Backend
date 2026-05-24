@@ -41,6 +41,15 @@ public class DoubtThread {
     @Column(name = "resolved_at")
     private Instant resolvedAt;
 
+    @Column(name = "student_name", length = 255)
+    private String studentName;
+
+    @Column(name = "student_class", length = 100)
+    private String studentClass;
+
+    @Column(name = "student_section", length = 10)
+    private String studentSection;
+
     @PrePersist
     void prePersist() {
         createdAt = Instant.now();

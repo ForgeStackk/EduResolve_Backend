@@ -32,11 +32,14 @@ public class StudentDoubtController {
     private final StudentPortalAuthHelper            authHelper;
     private final DoubtMessageAttachmentRepository   attRepo;
 
-    /** Open a new doubt thread to the subject teacher.
-     *  classId is optional — if omitted the backend resolves it from the student's own class. */
+    /**
+     * Open (or reuse) a doubt thread.
+     * teacherUserId — student explicitly picked this teacher; if absent, auto-resolved by subject.
+     */
     @PostMapping(consumes = "multipart/form-data")
     public ResponseEntity<DoubtThreadDto> openThread(
             @RequestParam(required = false) UUID classId,
+            @RequestParam(required = false) Long teacherUserId,
             @RequestParam(required = false) Long subjectId,
             @RequestParam(required = false) Long chapterId,
             @RequestParam(required = false) String textBody,
@@ -45,7 +48,7 @@ public class StudentDoubtController {
 
         Long studentId = authHelper.resolveUserLoginId();
         return ResponseEntity.ok(
-                doubtService.openThread(studentId, classId, subjectId, chapterId,
+                doubtService.openThread(studentId, classId, teacherUserId, subjectId, chapterId,
                         textBody, voiceNote, images));
     }
 

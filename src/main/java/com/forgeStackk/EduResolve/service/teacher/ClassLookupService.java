@@ -39,9 +39,13 @@ public class ClassLookupService {
 
     /** Returns all classrooms for the requesting teacher's school, sorted by grade then section. */
     public List<ClassResponse> getAllClasses(String schoolName) {
-        List<ClassRoom> rooms = (schoolName != null && !schoolName.isBlank())
-                ? classRoomRepo.findBySchoolName(schoolName)
-                : classRoomRepo.findAll();
+        List<ClassRoom> rooms;
+        if (schoolName != null && !schoolName.isBlank()) {
+            rooms = classRoomRepo.findBySchoolNameIgnoreCase(schoolName);
+            if (rooms.isEmpty()) rooms = classRoomRepo.findAll();
+        } else {
+            rooms = classRoomRepo.findAll();
+        }
         return rooms.stream()
                 .sorted(java.util.Comparator
                         .comparing(ClassRoom::getClassName)

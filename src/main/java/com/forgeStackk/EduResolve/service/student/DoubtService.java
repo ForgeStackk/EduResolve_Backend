@@ -50,33 +50,59 @@ public class DoubtService {
     private final StudentRepository          studentRepo;
     private final SimpMessagingTemplate      ws;
 
+    /**
+     * Opens a doubt thread from a student to a teacher.
+     *
+     * @param teacherUserIdOverride  When the student explicitly picks a teacher from the picker,
+     *                               pass their user_login.id here; pass null to auto-resolve via
+     *                               subject mapping (legacy flow).
+     */
     @Transactional
     public DoubtThreadDto openThread(
             Long studentId,
             UUID classId,
+            Long teacherUserIdOverride,
             Long subjectId,
             Long chapterId,
             String textBody,
             MultipartFile voiceNote,
             List<MultipartFile> images) {
 
-        // If no classId supplied, derive it from the student's own tp_student record
+        // Resolve student's classroom
         UUID resolvedClassId = (classId != null) ? classId :
                 studentRepo.findByUserId(studentId)
                         .map(s -> s.getClassId())
                         .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
                                 "Student class not found — please complete your profile"));
 
-        // Guard: student and target classroom must belong to the same school
         assertSameSchool(studentId, resolvedClassId);
 
-        Long teacherUserId = resolveTeacher(resolvedClassId, subjectId);
+        Long teacherUserId = (teacherUserIdOverride != null)
+                ? teacherUserIdOverride
+                : resolveTeacher(resolvedClassId, subjectId);
+
+        // ── Dedup: reuse existing OPEN thread between same student + teacher ──
+        Optional<DoubtThread> existing = threadRepo
+                .findFirstByStudentIdAndTeacherIdOrderByCreatedAtDesc(studentId, teacherUserId);
+        if (existing.isPresent() && "OPEN".equals(existing.get().getStatus())) {
+            DoubtThread existingThread = existing.get();
+            DoubtMessage msg = saveMessage(existingThread.getThreadId(), studentId, "STUDENT",
+                    textBody, voiceNote, images);
+            notifyRecipient(teacherUserId, existingThread.getThreadId(), textBody);
+            return getThread(existingThread.getThreadId());
+        }
+
+        // ── Resolve denormalized student info for the new thread ──
+        String[] studentInfo = resolveStudentInfo(studentId, resolvedClassId);
 
         DoubtThread thread = new DoubtThread();
         thread.setStudentId(studentId);
         thread.setTeacherId(teacherUserId);
         thread.setSubjectId(subjectId);
         thread.setChapterId(chapterId);
+        thread.setStudentName(studentInfo[0]);
+        thread.setStudentClass(studentInfo[1]);
+        thread.setStudentSection(studentInfo[2]);
         DoubtThread saved = threadRepo.save(thread);
 
         DoubtMessage msg = saveMessage(saved.getThreadId(), studentId, "STUDENT",
@@ -94,7 +120,24 @@ public class DoubtService {
                 attRepo.findByDoubtMessageId(msg.getDoubtMessageId())));
         return new DoubtThreadDto(saved.getThreadId(), studentId, teacherUserId, teacherName,
                 subjectId, subjectName, chapterId, saved.getStatus(),
-                saved.getCreatedAt(), saved.getResolvedAt(), msgs);
+                saved.getCreatedAt(), saved.getResolvedAt(), msgs,
+                studentInfo[0], studentInfo[1], studentInfo[2]);
+    }
+
+    /** Returns [studentName, studentClass, studentSection]. */
+    private String[] resolveStudentInfo(Long studentUserId, UUID classId) {
+        String name = studentRepo.findByUserId(studentUserId)
+                .map(s -> s.getFullName()).orElse("");
+        String className = "";
+        String section = "";
+        if (classId != null) {
+            var room = classRoomRepo.findById(classId);
+            if (room.isPresent()) {
+                className = room.get().getClassName() != null ? room.get().getClassName() : "";
+                section   = room.get().getSection()   != null ? room.get().getSection()   : "";
+            }
+        }
+        return new String[]{ name, className, section };
     }
 
     @Transactional
@@ -129,6 +172,18 @@ public class DoubtService {
         threadRepo.save(thread);
     }
 
+    @Transactional
+    public void resolveByTeacher(Long threadId, Long teacherUserId) {
+        DoubtThread thread = threadRepo.findById(threadId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        if (!thread.getTeacherId().equals(teacherUserId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+        thread.setStatus("RESOLVED");
+        thread.setResolvedAt(Instant.now());
+        threadRepo.save(thread);
+    }
+
     public DoubtThreadDto getThread(Long threadId) {
         DoubtThread thread = threadRepo.findById(threadId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
@@ -146,7 +201,8 @@ public class DoubtService {
         return new DoubtThreadDto(thread.getThreadId(), thread.getStudentId(),
                 thread.getTeacherId(), teacherName, thread.getSubjectId(), subjectName,
                 thread.getChapterId(), thread.getStatus(), thread.getCreatedAt(),
-                thread.getResolvedAt(), msgDtos);
+                thread.getResolvedAt(), msgDtos,
+                thread.getStudentName(), thread.getStudentClass(), thread.getStudentSection());
     }
 
     public List<DoubtThreadDto> listByStudent(Long studentId) {
@@ -154,6 +210,14 @@ public class DoubtService {
                 .stream()
                 .map(t -> getThread(t.getThreadId()))
                 .toList();
+    }
+
+    /** Teacher-side: list threads assigned to this teacher, optionally filtered by studentClass. */
+    public List<DoubtThreadDto> listByTeacher(Long teacherUserId, String studentClass) {
+        List<DoubtThread> threads = (studentClass != null && !studentClass.isBlank())
+                ? threadRepo.findByTeacherIdAndStudentClassOrderByCreatedAtDesc(teacherUserId, studentClass)
+                : threadRepo.findByTeacherIdOrderByCreatedAtDesc(teacherUserId);
+        return threads.stream().map(t -> getThread(t.getThreadId())).toList();
     }
 
     // ── Helpers ──────────────────────────────────────────────────────────────

@@ -16,4 +16,5 @@ public interface ClassRoomRepository extends JpaRepository<ClassRoom, UUID> {
     List<ClassRoom> findByClassTeacherId(UUID teacherId);
     List<ClassRoom> findByClassTeacherIdIsNotNull();
     List<ClassRoom> findBySchoolName(String schoolName);
+    List<ClassRoom> findBySchoolNameIgnoreCase(String schoolName);
 }

@@ -34,6 +34,10 @@ public class TeacherPortalAuthHelper {
                 .orElse(null);
     }
 
+    public Long resolveUserLoginId() {
+        return resolveUserId();
+    }
+
     private Long resolveUserId() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !auth.isAuthenticated() || !(auth.getPrincipal() instanceof Long)) {

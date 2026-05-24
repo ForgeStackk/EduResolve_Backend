@@ -14,5 +14,8 @@ public record DoubtThreadDto(
         String                status,
         Instant               createdAt,
         Instant               resolvedAt,
-        List<DoubtMessageDto> messages
+        List<DoubtMessageDto> messages,
+        String                studentName,
+        String                studentClass,
+        String                studentSection
 ) {}

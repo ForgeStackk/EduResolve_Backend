@@ -232,13 +232,16 @@ class MessageServiceTest {
     @Test
     void send_ioExceptionOnFirstFile_throwsRuntimeExceptionAndSkipsFanOut() throws Exception {
         stubSave(MessageContentType.FILE);
+        when(teacherRepo.findById(TEACHER_ID)).thenReturn(Optional.of(teacher("Ms. Priya")));
+        when(studentRepo.findByClassIdAndStatus(eq(CLASS_ID), eq(StudentStatus.ACTIVE)))
+                .thenReturn(List.of(student(UUID.randomUUID())));
 
         MultipartFile badFile = mock(MultipartFile.class);
         when(badFile.isEmpty()).thenReturn(false);
         when(badFile.getOriginalFilename()).thenReturn("broken.pdf");
         when(badFile.getContentType()).thenReturn("application/pdf");
         when(badFile.getSize()).thenReturn(512L);
-        doThrow(new IOException("disk full")).when(badFile).transferTo(any(File.class));
+        doThrow(new IOException("disk full")).when(badFile).transferTo(any(Path.class));
 
         assertThatThrownBy(() ->
                 service.send(TEACHER_ID, CLASS_ID, null, RecipientType.CLASS, "See PDF",
@@ -253,18 +256,21 @@ class MessageServiceTest {
     @Test
     void send_ioExceptionOnVoiceNote_throwsAndSkipsFanOut() throws Exception {
         stubSave(MessageContentType.VOICE);
-
+        when(teacherRepo.findById(TEACHER_ID)).thenReturn(Optional.of(teacher("Ms. Priya")));
+        when(studentRepo.findByClassIdAndStatus(eq(CLASS_ID), eq(StudentStatus.ACTIVE)))
+                .thenReturn(List.of(student(UUID.randomUUID())));
         MultipartFile badVoice = mock(MultipartFile.class);
         when(badVoice.isEmpty()).thenReturn(false);
         when(badVoice.getOriginalFilename()).thenReturn("voice.webm");
         when(badVoice.getContentType()).thenReturn("audio/webm");
         when(badVoice.getSize()).thenReturn(256L);
-        doThrow(new IOException("permission denied")).when(badVoice).transferTo(any(File.class));
+        doThrow(new IOException("permission denied")).when(badVoice).transferTo(any(Path.class));
 
         assertThatThrownBy(() ->
                 service.send(TEACHER_ID, CLASS_ID, null, RecipientType.CLASS, null,
                         false, null, null, badVoice, null, null)
-        ).isInstanceOf(RuntimeException.class);
+        ).isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Attachment upload failed");
 
         verify(attachmentRepo, never()).saveAll(any());
         verify(studentInboxRepo, never()).saveAll(any());
