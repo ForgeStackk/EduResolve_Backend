@@ -1,10 +1,12 @@
 package com.forgeStackk.EduResolve.controller;
 
+import com.forgeStackk.EduResolve.dto.BroadcastRequest;
 import com.forgeStackk.EduResolve.entity.AuditLog;
 import com.forgeStackk.EduResolve.entity.Broadcast;
+import com.forgeStackk.EduResolve.entity.teacher.Student;
 import com.forgeStackk.EduResolve.repository.AuditLogRepository;
 import com.forgeStackk.EduResolve.repository.BroadcastRepository;
-import com.forgeStackk.EduResolve.repository.UserLoginRepository;
+import com.forgeStackk.EduResolve.repository.teacher.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,16 +20,16 @@ import java.util.Map;
 @CrossOrigin(origins = "*")
 public class AdminBroadcastController {
 
-    @Autowired private BroadcastRepository  broadcastRepo;
-    @Autowired private UserLoginRepository  userRepo;
-    @Autowired private AuditLogRepository   auditRepo;
+    @Autowired private BroadcastRepository broadcastRepo;
+    @Autowired private StudentRepository   studentRepo;
+    @Autowired private AuditLogRepository  auditRepo;
 
     @GetMapping
     public Map<String, Object> list(
             @RequestParam(defaultValue = "0")  int page,
             @RequestParam(defaultValue = "10") int size) {
 
-        var all  = broadcastRepo.findAllByOrderByCreatedAtDesc();
+        var all   = broadcastRepo.findAllByOrderByCreatedAtDesc();
         int total = all.size();
         int from  = Math.min(page * size, total);
         int to    = Math.min(from + size, total);
@@ -37,6 +39,9 @@ public class AdminBroadcastController {
             row.put("id",             b.getId());
             row.put("channels",       b.getChannels());
             row.put("audienceGrades", b.getAudienceGrades());
+            row.put("classId",        b.getClassId() != null ? b.getClassId().toString() : null);
+            row.put("targetStudents", b.isTargetStudents());
+            row.put("targetParents",  b.isTargetParents());
             row.put("message",        b.getMessage());
             row.put("isEmergency",    b.isEmergency());
             row.put("status",         b.getStatus());
@@ -58,22 +63,25 @@ public class AdminBroadcastController {
     }
 
     @PostMapping
-    public ResponseEntity<Map<String, Object>> create(@RequestBody Map<String, Object> body) {
-        Broadcast b = new Broadcast();
-        b.setChannels(body.getOrDefault("channels", "whatsapp").toString());
-        b.setAudienceGrades(body.getOrDefault("audienceGrades", "").toString());
-        b.setMessage(body.getOrDefault("message", "").toString());
-        b.setEmergency(Boolean.parseBoolean(body.getOrDefault("isEmergency", "false").toString()));
-        b.setSentByName(body.getOrDefault("sentByName", "Admin").toString());
+    public ResponseEntity<Map<String, Object>> create(@RequestBody BroadcastRequest req) {
+        List<Student> students = req.classId() != null
+                ? studentRepo.findByClassId(req.classId())
+                : studentRepo.findAll();
 
-        // Estimate recipient count: count students in matching grades
-        String grades = b.getAudienceGrades();
-        long recipientCount = userRepo.findAll().stream()
-                .filter(u -> "student".equalsIgnoreCase(u.getRole()))
-                .filter(u -> grades == null || grades.isBlank()
-                        || (u.getClassName() != null && grades.contains(u.getClassName())))
-                .count();
-        b.setRecipientCount((int) recipientCount);
+        int recipientCount = 0;
+        if (req.targetStudents()) recipientCount += students.size();
+        if (req.targetParents())  recipientCount += (int) students.stream()
+                .filter(s -> s.getParentId() != null).count();
+
+        Broadcast b = new Broadcast();
+        b.setChannels(req.channels() != null ? req.channels() : "whatsapp");
+        b.setClassId(req.classId());
+        b.setTargetStudents(req.targetStudents());
+        b.setTargetParents(req.targetParents());
+        b.setMessage(req.message());
+        b.setEmergency(req.isEmergency());
+        b.setSentByName(req.sentByName() != null ? req.sentByName() : "Admin");
+        b.setRecipientCount(recipientCount);
         b.setStatus("pending");
         broadcastRepo.save(b);
 
@@ -97,6 +105,9 @@ public class AdminBroadcastController {
             row.put("id",             b.getId());
             row.put("channels",       b.getChannels());
             row.put("audienceGrades", b.getAudienceGrades());
+            row.put("classId",        b.getClassId() != null ? b.getClassId().toString() : null);
+            row.put("targetStudents", b.isTargetStudents());
+            row.put("targetParents",  b.isTargetParents());
             row.put("message",        b.getMessage());
             row.put("isEmergency",    b.isEmergency());
             row.put("status",         b.getStatus());

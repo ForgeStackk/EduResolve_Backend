@@ -5,6 +5,12 @@ spring:
   config:
     import: optional:classpath:application-local.yaml
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8180/realms/eduresolve}
+
   # ---------------------------------------------------------------------
   # PostgreSQL connection
   # Override any of these with environment variables (recommended for prod):

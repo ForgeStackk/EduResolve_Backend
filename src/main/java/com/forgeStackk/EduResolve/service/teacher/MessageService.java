@@ -54,6 +54,7 @@ public class MessageService {
     private final AttendanceRepository attendanceRepo;
     private final ClassRoomRepository classRoomRepo;
     private final TeacherRepository teacherRepo;
+    private final TeacherSubjectMappingRepository teacherSubjectMappingRepo;
     private final UserLoginRepository userLoginRepo;
     private final SimpMessagingTemplate ws;
 
@@ -75,6 +76,8 @@ public class MessageService {
 
         // Guard: teacher and target classroom must belong to the same school
         assertSameSchool(teacherId, targetClassId);
+        // Guard: teacher must teach in or be the class teacher of the target class
+        assertTeacherOwnsClass(teacherId, targetClassId);
 
         // Step 1: persist the Message entity
         Message msg = new Message();
@@ -289,6 +292,19 @@ public class MessageService {
     }
 
     // ── School isolation ──────────────────────────────────────────────────────
+
+    private void assertTeacherOwnsClass(UUID teacherId, UUID targetClassId) {
+        if (targetClassId == null) return;
+        boolean isSubjectTeacher = !teacherSubjectMappingRepo
+                .findByTeacherIdAndClassId(teacherId, targetClassId).isEmpty();
+        boolean isClassTeacher = classRoomRepo.findById(targetClassId)
+                .map(cr -> teacherId.equals(cr.getClassTeacherId()))
+                .orElse(false);
+        if (!isSubjectTeacher && !isClassTeacher) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "You do not teach in this class");
+        }
+    }
 
     private void assertSameSchool(UUID teacherId, UUID targetClassId) {
         if (targetClassId == null) return; // no classroom target — skip (individual recipient path)

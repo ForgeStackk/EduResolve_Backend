@@ -376,6 +376,30 @@ public class UserLoginService {
     }
 
     /**
+     * Build a full LoginResponse for a user looked up by Keycloak email claim.
+     * Used by the /api/auth/profile endpoint after OIDC login.
+     */
+    public LoginResponse getLoginResponseByEmail(String email) {
+        Optional<UserLogin> userOpt = userLoginRepository.findFirstByEmail(email);
+        if (userOpt.isEmpty()) return null;
+        UserLogin user = userOpt.get();
+        LoginResponse response = new LoginResponse();
+        response.setId(user.getId());
+        response.setFirstName(user.getFirstName());
+        response.setLastName(user.getLastName());
+        response.setUsername(user.getUsername());
+        response.setEmail(user.getEmail());
+        response.setRole(user.getRole());
+        response.setClassName(user.getClassName());
+        response.setPhoneNumber(user.getPhoneNumber());
+        response.setSchoolName(user.getSchoolName());
+        response.setSuccess(true);
+        response.setMessage("Profile loaded.");
+        setProfileId(response, user);
+        return response;
+    }
+
+    /**
      * Forgot password - generate reset token
      */
     public ForgotPasswordResponse forgotPassword(ForgotPasswordRequest request) {

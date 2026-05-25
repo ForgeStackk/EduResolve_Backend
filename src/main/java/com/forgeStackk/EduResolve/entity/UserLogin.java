@@ -42,4 +42,7 @@ public class UserLogin {
 
     @Column(length = 200)
     private String schoolName;
+
+    @Column(name = "guardian_phone", length = 20)
+    private String guardianPhone;
 }

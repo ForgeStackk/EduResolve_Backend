@@ -30,6 +30,15 @@ public class Broadcast {
     @Column(name = "audience_grades", length = 255)
     private String audienceGrades;
 
+    @Column(name = "class_id")
+    private java.util.UUID classId;
+
+    @Column(name = "target_students", nullable = false)
+    private boolean targetStudents = true;
+
+    @Column(name = "target_parents", nullable = false)
+    private boolean targetParents = false;
+
     @Column(nullable = false, columnDefinition = "TEXT")
     private String message;
 

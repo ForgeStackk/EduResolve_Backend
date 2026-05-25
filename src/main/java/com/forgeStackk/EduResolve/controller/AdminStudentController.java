@@ -34,12 +34,13 @@ public class AdminStudentController {
 
         List<Map<String, Object>> data = result.getContent().stream().map(u -> {
             Map<String, Object> row = new HashMap<>();
-            row.put("id",          u.getId());
-            row.put("name",        u.getFirstName() + " " + u.getLastName());
-            row.put("email",       u.getEmail());
-            row.put("className",   u.getClassName());
-            row.put("phoneNumber", u.getPhoneNumber());
-            row.put("schoolName",  u.getSchoolName());
+            row.put("id",            u.getId());
+            row.put("name",          u.getFirstName() + " " + u.getLastName());
+            row.put("email",         u.getEmail());
+            row.put("className",     u.getClassName());
+            row.put("phoneNumber",   u.getPhoneNumber());
+            row.put("schoolName",    u.getSchoolName());
+            row.put("guardianPhone", u.getGuardianPhone());
             return row;
         }).toList();
 
@@ -62,9 +63,10 @@ public class AdminStudentController {
             row.put("lastName",    u.getLastName());
             row.put("email",       u.getEmail());
             row.put("className",   u.getClassName());
-            row.put("phoneNumber", u.getPhoneNumber());
-            row.put("schoolName",  u.getSchoolName());
-            row.put("role",        u.getRole());
+            row.put("phoneNumber",   u.getPhoneNumber());
+            row.put("schoolName",    u.getSchoolName());
+            row.put("guardianPhone", u.getGuardianPhone());
+            row.put("role",          u.getRole());
             return ResponseEntity.ok(row);
         }).orElse(ResponseEntity.notFound().build());
     }
