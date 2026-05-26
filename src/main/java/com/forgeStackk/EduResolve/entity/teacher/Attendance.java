@@ -1,6 +1,7 @@
 package com.forgeStackk.EduResolve.entity.teacher;
 
 import com.forgeStackk.EduResolve.enums.AttendanceStatus;
+import com.forgeStackk.EduResolve.enums.ReasonCode;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -50,6 +51,16 @@ public class Attendance {
 
     @Column(columnDefinition = "TEXT")
     private String remarks;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "reason_code", length = 20)
+    private ReasonCode reasonCode;
+
+    @Column(name = "last_edited_by_user_id")
+    private Long lastEditedByUserId;
+
+    @Column(name = "last_edited_at")
+    private Instant lastEditedAt;
 
     @Version
     private Long version;

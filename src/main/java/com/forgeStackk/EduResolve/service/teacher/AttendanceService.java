@@ -3,9 +3,11 @@ package com.forgeStackk.EduResolve.service.teacher;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.forgeStackk.EduResolve.dto.teacher.*;
+import com.forgeStackk.EduResolve.entity.AttendanceAudit;
 import com.forgeStackk.EduResolve.entity.teacher.*;
 import com.forgeStackk.EduResolve.enums.*;
 import com.forgeStackk.EduResolve.entity.teacher.ClassRoom;
+import com.forgeStackk.EduResolve.repository.AttendanceAuditRepository;
 import com.forgeStackk.EduResolve.repository.teacher.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +30,7 @@ public class AttendanceService {
     private final AttendanceRepository attendanceRepo;
     private final AttendanceReportRepository reportRepo;
     private final MessageRepository messageRepo;
+    private final AttendanceAuditRepository auditRepo;
     private final ObjectMapper objectMapper;
 
     // ── Mark attendance ──────────────────────────────────────────────────────
@@ -39,20 +42,40 @@ public class AttendanceService {
                 ? req.getClassLabel().toUpperCase()
                 : resolveClassLabel(req.getClassId());
 
+        Teacher teacher = teacherId != null ? teacherRepo.findById(teacherId).orElse(null) : null;
+        Long teacherUserId = teacher != null ? teacher.getUserId() : null;
+
+        List<AttendanceAudit> audits = new ArrayList<>();
         List<Attendance> toSave = req.getRecords().stream().map(r -> {
-            Attendance a = attendanceRepo
-                    .findByClassIdAndStudentIdAndDate(classLabel, r.getStudentId(), req.getDate())
-                    .orElse(new Attendance());
+            Optional<Attendance> existing = attendanceRepo
+                    .findByClassIdAndStudentIdAndDate(classLabel, r.getStudentId(), req.getDate());
+            Attendance a = existing.orElse(new Attendance());
+            boolean isUpdate = existing.isPresent();
+            AttendanceStatus oldStatus = isUpdate ? a.getStatus() : null;
+            String oldReason = (isUpdate && a.getReasonCode() != null) ? a.getReasonCode().name() : null;
+
             a.setClassId(classLabel);
             a.setStudentId(r.getStudentId());
             a.setDate(req.getDate());
             a.setStatus(r.getStatus());
             a.setRemarks(r.getRemarks());
             a.setMarkedBy(teacherId);
+
+            if (isUpdate && oldStatus != r.getStatus() && teacherUserId != null) {
+                AttendanceAudit audit = new AttendanceAudit();
+                audit.setAttendanceId(a.getAttendanceId());
+                audit.setChangedByUserId(teacherUserId);
+                audit.setOldStatus(oldStatus.name());
+                audit.setNewStatus(r.getStatus().name());
+                audit.setOldReasonCode(oldReason);
+                audit.setNewReasonCode(a.getReasonCode() != null ? a.getReasonCode().name() : null);
+                audits.add(audit);
+            }
             return a;
         }).toList();
 
         attendanceRepo.saveAll(toSave);
+        if (!audits.isEmpty()) auditRepo.saveAll(audits);
         return new MarkAttendanceResponse(true, toSave.size());
     }
 

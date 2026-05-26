@@ -39,4 +39,7 @@ public class Student {
 
     @Column(name = "user_id")
     private Long userId;
+
+    @Column(name = "seq_id", updatable = false)
+    private Long seqId;
 }

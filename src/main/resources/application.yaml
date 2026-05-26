@@ -72,6 +72,12 @@ spring:
       max-file-size: 50MB
       max-request-size: 50MB
 
+  cache:
+    type: caffeine
+    cache-names: heatmap,insights
+    caffeine:
+      spec: maximumSize=500,expireAfterWrite=600s
+
 server:
   port: 8080
 
@@ -88,6 +94,10 @@ openai:
 reports:
   storage-dir: ${REPORTS_DIR:uploads/attendance-reports}
   school-name: ${SCHOOL_NAME:EduResolve Academy}
+
+attendance:
+  scan:
+    cron: "${ATTENDANCE_SCAN_CRON:0 0 6 * * ?}"
 
 jwt:
   secret: ${JWT_SECRET:eduResolve-jwt-secret-key-for-development-only-min-32-chars}

@@ -3,9 +3,11 @@ package com.forgeStackk.EduResolve.controller;
 import com.forgeStackk.EduResolve.dto.BroadcastRequest;
 import com.forgeStackk.EduResolve.entity.AuditLog;
 import com.forgeStackk.EduResolve.entity.Broadcast;
+import com.forgeStackk.EduResolve.entity.teacher.ParentInbox;
 import com.forgeStackk.EduResolve.entity.teacher.Student;
 import com.forgeStackk.EduResolve.repository.AuditLogRepository;
 import com.forgeStackk.EduResolve.repository.BroadcastRepository;
+import com.forgeStackk.EduResolve.repository.teacher.ParentInboxRepository;
 import com.forgeStackk.EduResolve.repository.teacher.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +22,10 @@ import java.util.Map;
 @CrossOrigin(origins = "*")
 public class AdminBroadcastController {
 
-    @Autowired private BroadcastRepository broadcastRepo;
-    @Autowired private StudentRepository   studentRepo;
-    @Autowired private AuditLogRepository  auditRepo;
+    @Autowired private BroadcastRepository  broadcastRepo;
+    @Autowired private StudentRepository    studentRepo;
+    @Autowired private AuditLogRepository   auditRepo;
+    @Autowired private ParentInboxRepository parentInboxRepo;
 
     @GetMapping
     public Map<String, Object> list(
@@ -84,6 +87,17 @@ public class AdminBroadcastController {
         b.setRecipientCount(recipientCount);
         b.setStatus("pending");
         broadcastRepo.save(b);
+
+        if (req.targetParents()) {
+            students.stream()
+                    .filter(s -> s.getParentId() != null)
+                    .forEach(s -> {
+                        ParentInbox inbox = new ParentInbox();
+                        inbox.setParentId(s.getParentId());
+                        inbox.setBroadcastId(b.getId());
+                        parentInboxRepo.save(inbox);
+                    });
+        }
 
         AuditLog log = new AuditLog();
         log.setAction("broadcast.created");

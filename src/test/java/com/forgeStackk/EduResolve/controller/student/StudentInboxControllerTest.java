@@ -9,8 +9,11 @@ import com.forgeStackk.EduResolve.service.student.StudentPortalService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.security.oauth2.server.resource.autoconfigure.servlet.OAuth2ResourceServerAutoConfiguration;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -24,7 +27,10 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(StudentInboxController.class)
+@WebMvcTest(value = StudentInboxController.class,
+            excludeAutoConfiguration = OAuth2ResourceServerAutoConfiguration.class)
+@ActiveProfiles("test")
+@WithMockUser
 class StudentInboxControllerTest {
 
     @Autowired MockMvc mockMvc;

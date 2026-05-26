@@ -49,6 +49,7 @@ class MessageServiceTest {
     @Mock AttendanceRepository attendanceRepo;
     @Mock ClassRoomRepository classRoomRepo;
     @Mock TeacherRepository teacherRepo;
+    @Mock TeacherSubjectMappingRepository teacherSubjectMappingRepo;
     @Mock UserLoginRepository userLoginRepo;
     @Mock SimpMessagingTemplate ws;
 
@@ -60,6 +61,10 @@ class MessageServiceTest {
     @BeforeEach
     void setup() {
         ReflectionTestUtils.setField(service, "uploadRoot", tempDir.toString());
+        // Make TEACHER_ID the class teacher so assertTeacherOwnsClass passes for all tests
+        lenient().when(classRoomRepo.findById(CLASS_ID)).thenReturn(
+            Optional.of(new ClassRoom(CLASS_ID, "Class 9", "A", "2025-26", TEACHER_ID, "Test School", 1L))
+        );
     }
 
     // ── helpers ──────────────────────────────────────────────────────────────

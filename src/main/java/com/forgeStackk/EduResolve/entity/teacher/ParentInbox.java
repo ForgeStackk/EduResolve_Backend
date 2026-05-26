@@ -27,8 +27,11 @@ public class ParentInbox {
     @Column(name = "parent_id", nullable = false)
     private UUID parentId;
 
-    @Column(name = "message_id", nullable = false)
+    @Column(name = "message_id")
     private UUID messageId;
+
+    @Column(name = "broadcast_id")
+    private Long broadcastId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "read_status", nullable = false, length = 10)

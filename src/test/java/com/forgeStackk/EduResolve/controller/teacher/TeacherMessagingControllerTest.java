@@ -10,8 +10,10 @@ import com.forgeStackk.EduResolve.service.teacher.MessageService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.security.oauth2.server.resource.autoconfigure.servlet.OAuth2ResourceServerAutoConfiguration;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -27,7 +29,9 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(TeacherMessagingController.class)
+@WebMvcTest(value = TeacherMessagingController.class,
+            excludeAutoConfiguration = OAuth2ResourceServerAutoConfiguration.class)
+@ActiveProfiles("test")
 @WithMockUser(roles = "TEACHER")
 class TeacherMessagingControllerTest {
 

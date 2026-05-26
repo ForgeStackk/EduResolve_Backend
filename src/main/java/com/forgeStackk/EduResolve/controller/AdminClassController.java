@@ -18,9 +18,10 @@ public class AdminClassController {
     @GetMapping
     public List<Map<String, Object>> list() {
         return classRepo.findAll().stream().map(c -> Map.<String, Object>of(
-                "classId",    c.getClassId().toString(),
-                "className",  c.getClassName(),
-                "section",    c.getSection(),
+                "id",        c.getSeqId(),
+                "classId",   c.getClassId().toString(),
+                "className", c.getClassName(),
+                "section",   c.getSection(),
                 "schoolName", c.getSchoolName() != null ? c.getSchoolName() : ""
         )).toList();
     }

@@ -33,4 +33,7 @@ public class ClassRoom {
 
     @Column(name = "school_name", length = 200)
     private String schoolName;
+
+    @Column(name = "seq_id", updatable = false)
+    private Long seqId;
 }
