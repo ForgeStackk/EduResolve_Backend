@@ -1,6 +1,7 @@
 package com.forgeStackk.EduResolve.security;
 
 import com.forgeStackk.EduResolve.entity.UserLogin;
+import com.forgeStackk.EduResolve.repository.StudentProfileRepository;
 import com.forgeStackk.EduResolve.repository.UserLoginRepository;
 import com.forgeStackk.EduResolve.repository.teacher.StudentRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +17,9 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class StudentPortalAuthHelper {
 
-    private final StudentRepository studentRepo;
-    private final UserLoginRepository userLoginRepo;
+    private final StudentRepository       studentRepo;
+    private final StudentProfileRepository studentProfileRepo;
+    private final UserLoginRepository      userLoginRepo;
 
     /** Returns the student's UUID (tp_student.student_id) — used by V4 inbox/attendance APIs. */
     public UUID resolveStudentId() {
@@ -34,6 +36,15 @@ public class StudentPortalAuthHelper {
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.FORBIDDEN, "No student profile linked to this account"));
         return userId;
+    }
+
+    /** Returns student_profile.id (BIGINT) — used as FK in student_notes.student_id. */
+    public Long resolveStudentProfileId() {
+        Long userLoginId = resolveRawUserId();
+        return studentProfileRepo.findByUserId(userLoginId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.FORBIDDEN, "No student profile linked to this account"))
+                .getId();
     }
 
     public String resolveSchoolName() {
