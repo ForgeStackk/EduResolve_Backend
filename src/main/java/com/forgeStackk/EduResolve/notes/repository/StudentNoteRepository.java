@@ -32,9 +32,47 @@ public interface StudentNoteRepository extends JpaRepository<StudentNote, Long> 
           AND (:sourceType IS NULL OR n.sourceType = :sourceType)
           AND (:isPinned IS NULL OR n.isPinned = :isPinned)
           AND (:isSharedToClassroom IS NULL OR n.isSharedToClassroom = :isSharedToClassroom)
-          AND (:search IS NULL OR LOWER(n.title) LIKE LOWER(CONCAT('%', :search, '%'))
-               OR LOWER(n.content) LIKE LOWER(CONCAT('%', :search, '%')))
         """)
+    Page<StudentNote> findFilteredNoSearch(
+        @Param("studentId") Long studentId,
+        @Param("schoolName") String schoolName,
+        @Param("language") String language,
+        @Param("subjectId") Long subjectId,
+        @Param("sourceType") String sourceType,
+        @Param("isPinned") Boolean isPinned,
+        @Param("isSharedToClassroom") Boolean isSharedToClassroom,
+        Pageable pageable);
+
+    @Query(value = """
+        SELECT * FROM student_notes sn
+        WHERE sn.student_id = :studentId
+          AND sn.school_name = :schoolName
+          AND sn.is_active = true
+          AND sn.is_archived = false
+          AND (:language IS NULL OR sn.language = :language)
+          AND (:subjectId IS NULL OR sn.subject_id = :subjectId)
+          AND (:sourceType IS NULL OR sn.source_type = :sourceType)
+          AND (:isPinned IS NULL OR sn.is_pinned = :isPinned)
+          AND (:isSharedToClassroom IS NULL OR sn.is_shared_to_classroom = :isSharedToClassroom)
+          AND (LOWER(sn.title::text) LIKE LOWER('%' || :search || '%')
+               OR LOWER(sn.content::text) LIKE LOWER('%' || :search || '%'))
+        ORDER BY sn.created_at DESC
+        """,
+        countQuery = """
+        SELECT COUNT(*) FROM student_notes sn
+        WHERE sn.student_id = :studentId
+          AND sn.school_name = :schoolName
+          AND sn.is_active = true
+          AND sn.is_archived = false
+          AND (:language IS NULL OR sn.language = :language)
+          AND (:subjectId IS NULL OR sn.subject_id = :subjectId)
+          AND (:sourceType IS NULL OR sn.source_type = :sourceType)
+          AND (:isPinned IS NULL OR sn.is_pinned = :isPinned)
+          AND (:isSharedToClassroom IS NULL OR sn.is_shared_to_classroom = :isSharedToClassroom)
+          AND (LOWER(sn.title::text) LIKE LOWER('%' || :search || '%')
+               OR LOWER(sn.content::text) LIKE LOWER('%' || :search || '%'))
+        """,
+        nativeQuery = true)
     Page<StudentNote> findFiltered(
         @Param("studentId") Long studentId,
         @Param("schoolName") String schoolName,

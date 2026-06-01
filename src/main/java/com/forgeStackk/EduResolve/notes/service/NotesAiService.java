@@ -6,8 +6,10 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.Duration;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -87,5 +89,80 @@ public class NotesAiService {
                 String msg = "\n\n[Generation interrupted: " + e.getMessage() + "]";
                 return Flux.just(msg);
             });
+    }
+
+    /**
+     * Transcribes audio using OpenAI Whisper (same API key, different endpoint).
+     * Returns the transcript, or empty string on failure.
+     * Intended to chain before generateNoteStream() in the audio-based notes flow.
+     */
+    public Mono<String> transcribeAudio(byte[] audioBytes, String filename, String mimeType) {
+        if (!isEnabled()) return Mono.just("");
+
+        org.springframework.http.client.MultipartBodyBuilder builder =
+            new org.springframework.http.client.MultipartBodyBuilder();
+        builder.part("model", "whisper-1");
+        builder.part("file",
+            new org.springframework.core.io.ByteArrayResource(audioBytes) {
+                @Override public String getFilename() { return filename; }
+            }).contentType(org.springframework.http.MediaType.parseMediaType(mimeType));
+
+        return webClient.post()
+            .uri("https://api.openai.com/v1/audio/transcriptions")
+            .header("Authorization", "Bearer " + apiKey)
+            .body(org.springframework.web.reactive.function.BodyInserters
+                .fromMultipartData(builder.build()))
+            .retrieve()
+            .bodyToMono(String.class)
+            .timeout(Duration.ofSeconds(60))
+            .map(json -> {
+                try { return mapper.readTree(json).at("/text").asText("").trim(); }
+                catch (Exception e) { return ""; }
+            })
+            .onErrorReturn("");
+    }
+
+    /**
+     * Non-streaming vision call: extracts readable text from an image using gpt-4o-mini.
+     * Returns the extracted text, or empty string on failure.
+     * Intended to be chained before generateNoteStream() in the image-based notes flow.
+     */
+    public Mono<String> extractTextFromImage(byte[] imageBytes, String mimeType) {
+        if (!isEnabled()) return Mono.just("");
+
+        String dataUrl = "data:" + mimeType + ";base64,"
+                       + Base64.getEncoder().encodeToString(imageBytes);
+
+        List<Object> userContent = List.of(
+            Map.of("type", "text", "text",
+                   "Extract all readable text from this image exactly as it appears. " +
+                   "If it is a handwritten note, textbook page, or printed document, " +
+                   "transcribe the content verbatim. Return only the extracted text — no commentary."),
+            Map.of("type", "image_url",
+                   "image_url", Map.of("url", dataUrl, "detail", "high"))
+        );
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("model",       model);  // gpt-4o-mini supports vision
+        body.put("messages",    List.of(Map.of("role", "user", "content", userContent)));
+        body.put("max_tokens",  2000);
+        body.put("temperature", 0.1);    // low temperature for faithful transcription
+
+        return webClient.post()
+            .uri(OPENAI_URL)
+            .header("Authorization", "Bearer " + apiKey)
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .retrieve()
+            .bodyToMono(String.class)
+            .timeout(Duration.ofSeconds(30))
+            .map(json -> {
+                try {
+                    return mapper.readTree(json).at("/choices/0/message/content").asText("").trim();
+                } catch (Exception e) {
+                    return "";
+                }
+            })
+            .onErrorReturn("");
     }
 }

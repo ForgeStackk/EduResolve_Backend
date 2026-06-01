@@ -38,6 +38,8 @@ public class StudentClassroomService {
     private final StudentNoteRepository          noteRepo;
     private final UserLoginRepository            userLoginRepo;
     private final ClassroomWebSocketService      wsService;
+    private final StudyGroupRepository           studyGroupRepo;
+    private final StudyGroupMemberRepository     studyGroupMemberRepo;
 
     @Value("${classroom.max-pinned-per-room:5}")
     private int maxPinnedPerRoom;
@@ -271,6 +273,136 @@ public class StudentClassroomService {
         report.setReportedByUserId(userLoginId);
         report.setReason(req.reason());
         reportedRepo.save(report);
+    }
+
+    // ── Study groups ──────────────────────────────────────────────────────────
+
+    @Transactional
+    public StudyGroupResponse createGroup(Long classroomId, Long ownerUserId,
+                                          String schoolName, CreateGroupRequest req) {
+        validateMembership(classroomId, ownerUserId, schoolName);
+
+        if (req.name() == null || req.name().isBlank())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Group name is required");
+        if (req.memberUserIds() == null || req.memberUserIds().isEmpty())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Select at least one classmate");
+
+        // Validate all requested members are actually in this classroom
+        for (Long memberId : req.memberUserIds()) {
+            if (memberId.equals(ownerUserId)) continue; // owner added automatically
+            if (!memberRepo.existsByClassroomIdAndUserId(classroomId, memberId))
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "User " + memberId + " is not a member of this classroom");
+        }
+
+        StudyGroup group = new StudyGroup();
+        group.setClassroomId(classroomId);
+        group.setName(req.name().trim());
+        group.setDescription(req.description());
+        group.setOwnerUserId(ownerUserId);
+        studyGroupRepo.save(group);
+
+        // Add owner + selected members (deduplicated)
+        req.memberUserIds().stream().distinct()
+            .filter(uid -> !uid.equals(ownerUserId))
+            .forEach(uid -> {
+                StudyGroupMember m = new StudyGroupMember();
+                m.setGroupId(group.getId());
+                m.setUserId(uid);
+                studyGroupMemberRepo.save(m);
+            });
+
+        return toGroupResponse(group, ownerUserId);
+    }
+
+    public List<StudyGroupResponse> listMyGroups(Long classroomId, Long userId, String schoolName) {
+        validateMembership(classroomId, userId, schoolName);
+        return studyGroupRepo.findMyGroups(classroomId, userId)
+            .stream().map(g -> toGroupResponse(g, userId)).toList();
+    }
+
+    @Transactional
+    public StudyGroupResponse updateGroup(Long classroomId, Long groupId,
+                                          Long userId, String schoolName, UpdateGroupRequest req) {
+        validateMembership(classroomId, userId, schoolName);
+        StudyGroup group = requireGroup(groupId, classroomId);
+        requireOwner(group, userId);
+
+        if (req.name() != null && !req.name().isBlank()) group.setName(req.name().trim());
+        if (req.description() != null) group.setDescription(req.description());
+        return toGroupResponse(studyGroupRepo.save(group), userId);
+    }
+
+    @Transactional
+    public void addGroupMembers(Long classroomId, Long groupId,
+                                Long userId, String schoolName, List<Long> memberUserIds) {
+        validateMembership(classroomId, userId, schoolName);
+        StudyGroup group = requireGroup(groupId, classroomId);
+        requireOwner(group, userId);
+
+        for (Long memberId : memberUserIds) {
+            if (!memberRepo.existsByClassroomIdAndUserId(classroomId, memberId))
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "User " + memberId + " is not a member of this classroom");
+            if (!studyGroupMemberRepo.existsByGroupIdAndUserId(groupId, memberId)) {
+                StudyGroupMember m = new StudyGroupMember();
+                m.setGroupId(groupId);
+                m.setUserId(memberId);
+                studyGroupMemberRepo.save(m);
+            }
+        }
+    }
+
+    @Transactional
+    public void removeGroupMember(Long classroomId, Long groupId,
+                                  Long userId, String schoolName, Long targetUserId) {
+        validateMembership(classroomId, userId, schoolName);
+        StudyGroup group = requireGroup(groupId, classroomId);
+        requireOwner(group, userId);
+        if (targetUserId.equals(group.getOwnerUserId()))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot remove the group owner");
+        studyGroupMemberRepo.deleteByGroupIdAndUserId(groupId, targetUserId);
+    }
+
+    @Transactional
+    public void deleteGroup(Long classroomId, Long groupId, Long userId, String schoolName) {
+        validateMembership(classroomId, userId, schoolName);
+        StudyGroup group = requireGroup(groupId, classroomId);
+        requireOwner(group, userId);
+        studyGroupMemberRepo.findByGroupId(groupId).forEach(studyGroupMemberRepo::delete);
+        studyGroupRepo.delete(group);
+    }
+
+    private StudyGroup requireGroup(Long groupId, Long classroomId) {
+        return studyGroupRepo.findById(groupId)
+            .filter(g -> g.getClassroomId().equals(classroomId))
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Group not found"));
+    }
+
+    private void requireOwner(StudyGroup group, Long userId) {
+        if (!group.getOwnerUserId().equals(userId))
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only the group owner can do this");
+    }
+
+    private StudyGroupResponse toGroupResponse(StudyGroup group, Long currentUserId) {
+        String ownerName = userLoginRepo.findById(group.getOwnerUserId())
+            .map(u -> u.getFirstName() + " " + u.getLastName()).orElse("Unknown");
+
+        List<GroupMemberDto> members = studyGroupMemberRepo.findByGroupId(group.getId())
+            .stream().map(m -> {
+                String name = userLoginRepo.findById(m.getUserId())
+                    .map(u -> u.getFirstName() + " " + u.getLastName()).orElse("Unknown");
+                return new GroupMemberDto(m.getUserId(), name, false);
+            }).toList();
+
+        // Prepend owner as first member, marked as owner
+        List<GroupMemberDto> allMembers = new java.util.ArrayList<>();
+        allMembers.add(new GroupMemberDto(group.getOwnerUserId(), ownerName, true));
+        allMembers.addAll(members);
+
+        return new StudyGroupResponse(group.getId(), group.getClassroomId(), group.getName(),
+            group.getDescription(), group.getOwnerUserId(), ownerName,
+            group.getOwnerUserId().equals(currentUserId), allMembers, group.getCreatedAt());
     }
 
     // ── Private helpers ───────────────────────────────────────────────────────

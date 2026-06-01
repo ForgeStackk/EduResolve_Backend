@@ -17,6 +17,7 @@ import reactor.core.publisher.Flux;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/student/notes")
@@ -29,6 +30,12 @@ public class StudentNotesController {
 
     @Value("${notes.max-pdf-size-mb:25}")
     private int maxPdfSizeMb;
+
+    private static final long        MAX_IMAGE_BYTES     = 10L * 1024 * 1024;
+    private static final Set<String> ALLOWED_IMAGE_TYPES  = Set.of("image/png", "image/jpeg", "image/webp");
+    private static final long        MAX_AUDIO_BYTES     = 25L * 1024 * 1024;
+    private static final Set<String> ALLOWED_AUDIO_TYPES  =
+        Set.of("audio/mpeg", "audio/wav", "audio/mp4", "audio/webm", "audio/ogg", "audio/m4a");
 
     // ── A. Generate note (SSE) ────────────────────────────────────────────────
 
@@ -199,5 +206,66 @@ public class StudentNotesController {
     public PdfStatusResponse pdfStatus(@PathVariable Long jobId) {
         Long studentId = auth.resolveStudentProfileId();
         return pdfService.getStatus(jobId, studentId);
+    }
+
+    // ── Q. Generate from audio (Whisper → SSE stream) ────────────────────────
+
+    @PostMapping(value = "/from-audio", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<String> generateFromAudio(
+            @RequestParam("audio") MultipartFile audio,
+            @RequestParam(defaultValue = "en") String language) throws IOException {
+
+        String contentType = audio.getContentType() != null ? audio.getContentType().toLowerCase() : "";
+        if (!ALLOWED_AUDIO_TYPES.contains(contentType))
+            throw new ResponseStatusException(HttpStatus.UNSUPPORTED_MEDIA_TYPE,
+                "{\"errorCode\":\"UNSUPPORTED_FORMAT\"}");
+
+        if (audio.getSize() > MAX_AUDIO_BYTES)
+            throw new ResponseStatusException(HttpStatus.PAYLOAD_TOO_LARGE,
+                "{\"errorCode\":\"FILE_TOO_LARGE\"}");
+
+        Long   studentId = auth.resolveStudentProfileId();
+        String school    = auth.resolveSchoolName();
+        byte[] bytes     = audio.getBytes();
+        String filename  = audio.getOriginalFilename() != null ? audio.getOriginalFilename() : "audio.mp3";
+
+        return notesService.generateFromAudioStream(studentId, school, bytes, filename, contentType, language)
+            .onErrorResume(e -> {
+                if (e instanceof ResponseStatusException rse) {
+                    String reason = rse.getReason() != null ? rse.getReason() : "GENERATION_FAILED";
+                    return Flux.just("ERROR:{\"errorCode\":\"" + reason + "\"}");
+                }
+                return Flux.just("ERROR:{\"errorCode\":\"GENERATION_FAILED\"}");
+            });
+    }
+
+    // ── R. Generate from image (vision OCR → SSE stream) ──────────────────────
+
+    @PostMapping(value = "/from-image", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<String> generateFromImage(
+            @RequestParam("image") MultipartFile image,
+            @RequestParam(defaultValue = "en") String language) throws IOException {
+
+        String contentType = image.getContentType() != null ? image.getContentType().toLowerCase() : "";
+        if (!ALLOWED_IMAGE_TYPES.contains(contentType))
+            throw new ResponseStatusException(HttpStatus.UNSUPPORTED_MEDIA_TYPE,
+                "{\"errorCode\":\"UNSUPPORTED_FORMAT\"}");
+
+        if (image.getSize() > MAX_IMAGE_BYTES)
+            throw new ResponseStatusException(HttpStatus.PAYLOAD_TOO_LARGE,
+                "{\"errorCode\":\"FILE_TOO_LARGE\"}");
+
+        Long   studentId = auth.resolveStudentProfileId();
+        String school    = auth.resolveSchoolName();
+        byte[] bytes     = image.getBytes();
+
+        return notesService.generateFromImageStream(studentId, school, bytes, contentType, language)
+            .onErrorResume(e -> {
+                if (e instanceof ResponseStatusException rse) {
+                    String reason = rse.getReason() != null ? rse.getReason() : "GENERATION_FAILED";
+                    return Flux.just("ERROR:{\"errorCode\":\"" + reason + "\"}");
+                }
+                return Flux.just("ERROR:{\"errorCode\":\"GENERATION_FAILED\"}");
+            });
     }
 }

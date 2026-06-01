@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/api/student/classroom")
@@ -179,6 +180,67 @@ public class StudentClassroomController {
         Long userLoginId = auth.resolveUserLoginId();
         String schoolName = resolveSchool(userLoginId);
         classroomService.reportMessage(classroomId, messageId, userLoginId, schoolName, req);
+    }
+
+    // ── AD. Study groups ──────────────────────────────────────────────────────
+
+    @PostMapping("/{classroomId}/groups")
+    @ResponseStatus(HttpStatus.CREATED)
+    public StudyGroupResponse createGroup(
+            @PathVariable Long classroomId,
+            @RequestBody CreateGroupRequest req) {
+        Long userLoginId = auth.resolveUserLoginId();
+        String schoolName = resolveSchool(userLoginId);
+        return classroomService.createGroup(classroomId, userLoginId, schoolName, req);
+    }
+
+    @GetMapping("/{classroomId}/groups")
+    public List<StudyGroupResponse> listGroups(@PathVariable Long classroomId) {
+        Long userLoginId = auth.resolveUserLoginId();
+        String schoolName = resolveSchool(userLoginId);
+        return classroomService.listMyGroups(classroomId, userLoginId, schoolName);
+    }
+
+    @PutMapping("/{classroomId}/groups/{groupId}")
+    public StudyGroupResponse updateGroup(
+            @PathVariable Long classroomId,
+            @PathVariable Long groupId,
+            @RequestBody UpdateGroupRequest req) {
+        Long userLoginId = auth.resolveUserLoginId();
+        String schoolName = resolveSchool(userLoginId);
+        return classroomService.updateGroup(classroomId, groupId, userLoginId, schoolName, req);
+    }
+
+    @PostMapping("/{classroomId}/groups/{groupId}/members")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void addGroupMembers(
+            @PathVariable Long classroomId,
+            @PathVariable Long groupId,
+            @RequestBody List<Long> memberUserIds) {
+        Long userLoginId = auth.resolveUserLoginId();
+        String schoolName = resolveSchool(userLoginId);
+        classroomService.addGroupMembers(classroomId, groupId, userLoginId, schoolName, memberUserIds);
+    }
+
+    @DeleteMapping("/{classroomId}/groups/{groupId}/members/{userId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeGroupMember(
+            @PathVariable Long classroomId,
+            @PathVariable Long groupId,
+            @PathVariable Long userId) {
+        Long userLoginId = auth.resolveUserLoginId();
+        String schoolName = resolveSchool(userLoginId);
+        classroomService.removeGroupMember(classroomId, groupId, userLoginId, schoolName, userId);
+    }
+
+    @DeleteMapping("/{classroomId}/groups/{groupId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteGroup(
+            @PathVariable Long classroomId,
+            @PathVariable Long groupId) {
+        Long userLoginId = auth.resolveUserLoginId();
+        String schoolName = resolveSchool(userLoginId);
+        classroomService.deleteGroup(classroomId, groupId, userLoginId, schoolName);
     }
 
     // ── Private helpers ───────────────────────────────────────────────────────

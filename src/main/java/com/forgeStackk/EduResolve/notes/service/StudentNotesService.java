@@ -141,6 +141,72 @@ public class StudentNotesService {
                 "Daily note limit reached (" + dailyNoteLimit + ")");
     }
 
+    // ── A3. Generate from audio (Whisper transcription → stream) ─────────────
+
+    public Flux<String> generateFromAudioStream(Long studentId, String schoolName,
+                                                byte[] audioBytes, String filename,
+                                                String mimeType, String language) {
+        enforceRateLimit(studentId);
+
+        String lang         = language != null ? language : "en";
+        String systemPrompt = "hi".equals(lang) ? systemPromptHi : systemPromptEn;
+        String lengthHint   = resolveLengthHint(studentId, null);
+        String fullSystem   = systemPrompt + "\n\nNote length preference: " + lengthHint;
+
+        return aiService.transcribeAudio(audioBytes, filename, mimeType)
+            .flatMapMany(transcript -> {
+                if (transcript == null || transcript.isBlank()) {
+                    return Flux.error(new ResponseStatusException(
+                        HttpStatus.UNPROCESSABLE_ENTITY, "TRANSCRIPTION_FAILED"));
+                }
+
+                GenerateNoteRequest synthetic = new GenerateNoteRequest(
+                    "VOICE", lang, transcript, null, null, null, null, null, null, null);
+
+                AtomicReference<StringBuilder> buffer = new AtomicReference<>(new StringBuilder());
+
+                return aiService.generateNoteStream(fullSystem, transcript)
+                    .doOnNext(delta -> buffer.get().append(delta))
+                    .doOnComplete(() ->
+                        persistGeneratedNote(studentId, schoolName, synthetic, lang, buffer.get().toString()))
+                    .doOnError(e ->
+                        log.error("Audio note stream error for student={}: {}", studentId, e.getMessage()));
+            });
+    }
+
+    // ── A2. Generate from image (vision OCR → stream) ────────────────────────
+
+    public Flux<String> generateFromImageStream(Long studentId, String schoolName,
+                                                byte[] imageBytes, String mimeType,
+                                                String language) {
+        enforceRateLimit(studentId);
+
+        String lang         = language != null ? language : "en";
+        String systemPrompt = "hi".equals(lang) ? systemPromptHi : systemPromptEn;
+        String lengthHint   = resolveLengthHint(studentId, null);
+        String fullSystem   = systemPrompt + "\n\nNote length preference: " + lengthHint;
+
+        return aiService.extractTextFromImage(imageBytes, mimeType)
+            .flatMapMany(extracted -> {
+                if (extracted == null || extracted.isBlank()) {
+                    return Flux.error(new ResponseStatusException(
+                        HttpStatus.UNPROCESSABLE_ENTITY, "OCR_EMPTY"));
+                }
+
+                GenerateNoteRequest synthetic = new GenerateNoteRequest(
+                    "PHOTO_OCR", lang, extracted, null, null, null, null, null, null, null);
+
+                AtomicReference<StringBuilder> buffer = new AtomicReference<>(new StringBuilder());
+
+                return aiService.generateNoteStream(fullSystem, extracted)
+                    .doOnNext(delta -> buffer.get().append(delta))
+                    .doOnComplete(() ->
+                        persistGeneratedNote(studentId, schoolName, synthetic, lang, buffer.get().toString()))
+                    .doOnError(e ->
+                        log.error("Image note stream error for student={}: {}", studentId, e.getMessage()));
+            });
+    }
+
     // ── B. List notes ─────────────────────────────────────────────────────────
 
     public Page<NoteListItem> listNotes(Long studentId, String schoolName,
@@ -148,6 +214,11 @@ public class StudentNotesService {
                                         Boolean isPinned, Boolean isSharedToClassroom,
                                         String search, int page, int size) {
         PageRequest pr = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        if (search == null || search.isBlank()) {
+            return noteRepo.findFilteredNoSearch(studentId, schoolName, language, subjectId,
+                    sourceType, isPinned, isSharedToClassroom, pr)
+                .map(this::toListItem);
+        }
         return noteRepo.findFiltered(studentId, schoolName, language, subjectId,
                 sourceType, isPinned, isSharedToClassroom, search, pr)
             .map(this::toListItem);
