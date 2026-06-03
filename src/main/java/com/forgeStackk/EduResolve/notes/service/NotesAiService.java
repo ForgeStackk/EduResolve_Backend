@@ -1,6 +1,7 @@
 package com.forgeStackk.EduResolve.notes.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -14,10 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Separate AI service for note generation — uses configurable max-tokens
- * independent of the chat AI service (which is capped at 600 for chat responses).
- */
+@Slf4j
 @Service
 public class NotesAiService {
 
@@ -85,9 +83,10 @@ public class NotesAiService {
                     return Flux.<String>empty();
                 }
             })
-            .onErrorResume(e -> {
-                String msg = "\n\n[Generation interrupted: " + e.getMessage() + "]";
-                return Flux.just(msg);
+            .onErrorMap(e -> {
+                log.error("OpenAI generation error: {}", e.getMessage());
+                return new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.BAD_GATEWAY, "GENERATION_FAILED");
             });
     }
 

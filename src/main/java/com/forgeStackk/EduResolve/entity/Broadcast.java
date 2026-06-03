@@ -33,10 +33,10 @@ public class Broadcast {
     @Column(name = "class_id")
     private java.util.UUID classId;
 
-    @Column(name = "target_students", nullable = false)
+    @Column(name = "target_students", nullable = false, columnDefinition = "boolean not null default true")
     private boolean targetStudents = true;
 
-    @Column(name = "target_parents", nullable = false)
+    @Column(name = "target_parents", nullable = false, columnDefinition = "boolean not null default false")
     private boolean targetParents = false;
 
     @Column(nullable = false, columnDefinition = "TEXT")

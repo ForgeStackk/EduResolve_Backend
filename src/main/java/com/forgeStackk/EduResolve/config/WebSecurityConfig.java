@@ -4,6 +4,7 @@ import com.forgeStackk.EduResolve.repository.UserLoginRepository;
 import com.forgeStackk.EduResolve.security.JwtAuthenticationFilter;
 import com.forgeStackk.EduResolve.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import jakarta.servlet.DispatcherType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -47,6 +48,7 @@ public class WebSecurityConfig {
             )
             .addFilterBefore(new JwtAuthenticationFilter(jwtUtil, jwtDecoder, userLoginRepo), UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(auth -> auth
+                .dispatcherTypeMatchers(DispatcherType.ASYNC, DispatcherType.FORWARD, DispatcherType.ERROR).permitAll()
                 .requestMatchers(
                     "/api/auth/login", "/api/auth/register", "/api/auth/logout",
                     "/api/auth/forgot-password", "/api/auth/reset-password",

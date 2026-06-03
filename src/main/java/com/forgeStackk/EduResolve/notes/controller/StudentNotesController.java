@@ -43,7 +43,14 @@ public class StudentNotesController {
     public Flux<String> generate(@RequestBody GenerateNoteRequest req) {
         Long studentId = auth.resolveStudentProfileId();
         String school  = auth.resolveSchoolName();
-        return notesService.generateStream(studentId, school, req);
+        return notesService.generateStream(studentId, school, req)
+            .onErrorResume(e -> {
+                if (e instanceof ResponseStatusException rse) {
+                    String reason = rse.getReason() != null ? rse.getReason() : "GENERATION_FAILED";
+                    return Flux.just("ERROR:{\"errorCode\":\"" + reason + "\"}");
+                }
+                return Flux.just("ERROR:{\"errorCode\":\"GENERATION_FAILED\"}");
+            });
     }
 
     // ── B. List notes ─────────────────────────────────────────────────────────
