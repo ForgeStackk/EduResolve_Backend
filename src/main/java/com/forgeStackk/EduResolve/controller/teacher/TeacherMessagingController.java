@@ -5,6 +5,10 @@ import com.forgeStackk.EduResolve.dto.teacher.SendMessageResponse;
 import com.forgeStackk.EduResolve.enums.RecipientType;
 import com.forgeStackk.EduResolve.security.TeacherPortalAuthHelper;
 import com.forgeStackk.EduResolve.service.teacher.MessageService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -28,6 +32,33 @@ public class TeacherMessagingController {
 
     private final MessageService messageService;
     private final TeacherPortalAuthHelper authHelper;
+
+    // ── JSON body helper ─────────────────────────────────────────────────────
+    /** Simple DTO for JSON-based class notice (non-multipart path). */
+    @Data
+    public static class ClassNoticeRequest {
+        @NotNull(message = "targetClassId is required")
+        private UUID targetClassId;
+        private Long targetSubjectId;
+        @NotBlank(message = "textBody is required")
+        private String textBody;
+        private RecipientType recipientType = RecipientType.CLASS;
+    }
+
+    /**
+     * POST /messages  (application/json)
+     * Allows teachers to send a text-only class notice without multipart overhead.
+     */
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<SendMessageResponse> sendJson(
+            @Valid @RequestBody ClassNoticeRequest req) {
+        UUID teacherId = authHelper.resolveTeacherId();
+        SendMessageResponse response = messageService.send(
+                teacherId, req.getTargetClassId(), req.getTargetSubjectId(),
+                req.getRecipientType(), req.getTextBody(),
+                false, null, null, null, null, null);
+        return ResponseEntity.ok(response);
+    }
 
     // POST /messages/send  (multipart/form-data)
     @PostMapping(value = "/send", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

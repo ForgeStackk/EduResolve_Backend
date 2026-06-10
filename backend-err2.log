@@ -1,0 +1,2 @@
+Jun 03, 2026 9:08:01 PM org.hibernate.orm.tooling.maven.EnhancementContext doBiDirectionalAssociationManagement
+WARN: HHH90000029: The [management of bidirectional persistent association attributes] configuration is deprecated and will be removed. Set the value to [false] to get rid of this warning

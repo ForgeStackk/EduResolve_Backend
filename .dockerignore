@@ -1,0 +1,8 @@
+target/
+.mvn/wrapper/maven-wrapper.jar
+*.md
+.git
+.gitignore
+.github
+src/main/resources/application-local.yaml
+src/main/resources/application-local.yml

@@ -9,6 +9,7 @@ import com.forgeStackk.EduResolve.repository.AuditLogRepository;
 import com.forgeStackk.EduResolve.repository.BroadcastRepository;
 import com.forgeStackk.EduResolve.repository.teacher.ParentInboxRepository;
 import com.forgeStackk.EduResolve.repository.teacher.StudentRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -66,29 +67,31 @@ public class AdminBroadcastController {
     }
 
     @PostMapping
-    public ResponseEntity<Map<String, Object>> create(@RequestBody BroadcastRequest req) {
+    public ResponseEntity<Map<String, Object>> create(@Valid @RequestBody BroadcastRequest req) {
         List<Student> students = req.classId() != null
                 ? studentRepo.findByClassId(req.classId())
                 : studentRepo.findAll();
 
         int recipientCount = 0;
-        if (req.targetStudents()) recipientCount += students.size();
-        if (req.targetParents())  recipientCount += (int) students.stream()
+        if (req.targetStudentsOrFalse()) recipientCount += students.size();
+        if (req.targetParentsOrFalse())  recipientCount += (int) students.stream()
                 .filter(s -> s.getParentId() != null).count();
 
         Broadcast b = new Broadcast();
-        b.setChannels(req.channels() != null ? req.channels() : "whatsapp");
+        String channelsStr = (req.channels() != null && !req.channels().isEmpty())
+                ? String.join(",", req.channels()) : "whatsapp";
+        b.setChannels(channelsStr);
         b.setClassId(req.classId());
-        b.setTargetStudents(req.targetStudents());
-        b.setTargetParents(req.targetParents());
+        b.setTargetStudents(req.targetStudentsOrFalse());
+        b.setTargetParents(req.targetParentsOrFalse());
         b.setMessage(req.message());
-        b.setEmergency(req.isEmergency());
+        b.setEmergency(req.isEmergencyOrFalse());
         b.setSentByName(req.sentByName() != null ? req.sentByName() : "Admin");
         b.setRecipientCount(recipientCount);
         b.setStatus("pending");
         broadcastRepo.save(b);
 
-        if (req.targetParents()) {
+        if (req.targetParentsOrFalse()) {
             students.stream()
                     .filter(s -> s.getParentId() != null)
                     .forEach(s -> {

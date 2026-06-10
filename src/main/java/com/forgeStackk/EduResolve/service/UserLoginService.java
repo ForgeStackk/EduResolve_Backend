@@ -110,7 +110,8 @@ public class UserLoginService {
             }
             user.setEmail(request.getEmail());
             user.setPassword(passwordEncoder.encode(request.getPassword()));
-            user.setRole(request.getRole());
+            // Public registration always creates a STUDENT. Role escalation is prevented here.
+            user.setRole("student");
             user.setPhoneNumber(request.getPhoneNumber());
             if (request.getSchoolName() != null && !request.getSchoolName().trim().isEmpty()) {
                 user.setSchoolName(request.getSchoolName());

@@ -1,43 +1,31 @@
-# Use OpenJDK 17 as base image
-FROM openjdk:17-jdk-slim
-
-# Set working directory
+# Stage 1: Build
+FROM eclipse-temurin:21-jdk-alpine AS build
 WORKDIR /app
 
-# Install necessary packages
-RUN apt-get update && apt-get install -y \
-    curl \
-    wget \
-    && rm -rf /var/lib/apt/lists/*
-
-# Copy Maven wrapper and pom.xml
 COPY mvnw .
 COPY .mvn .mvn
 COPY pom.xml .
-
-# Make Maven wrapper executable
 RUN chmod +x ./mvnw
+RUN ./mvnw dependency:go-offline -B -P prod
 
-# Download Maven dependencies (layer caching)
-RUN ./mvnw dependency:go-offline -B
-
-# Copy source code
 COPY src ./src
+RUN ./mvnw clean package -DskipTests -P prod
 
-# Build the application
-RUN ./mvnw clean package -DskipTests
+# Stage 2: Run (JRE only — ~200 MB smaller than JDK)
+FROM eclipse-temurin:21-jre-alpine AS runtime
+WORKDIR /app
 
-# Expose port
-EXPOSE 8080
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
-# Create non-root user for security
-RUN groupadd -r appuser && useradd -r -g appuser appuser
-RUN chown -R appuser:appuser /app
+COPY --from=build /app/target/EduResolve-0.0.1-SNAPSHOT.jar app.jar
+RUN chown appuser:appgroup app.jar
+
 USER appuser
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=60s --retries=3 \
-    CMD curl -f http://localhost:8080/actuator/health || exit 1
+EXPOSE 8080
 
-# Start the application
-ENTRYPOINT ["java", "-jar", "target/EduResolve_Backend-0.0.1-SNAPSHOT.jar"]
+HEALTHCHECK --interval=30s --timeout=10s --start-period=90s --retries=3 \
+    CMD wget -qO- http://localhost:8080/actuator/health || exit 1
+
+ENTRYPOINT ["java", "-XX:+UseContainerSupport", "-XX:MaxRAMPercentage=75.0", \
+            "-jar", "app.jar", "--spring.profiles.active=prod"]

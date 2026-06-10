@@ -8,6 +8,7 @@ import com.forgeStackk.EduResolve.dto.RegisterRequest;
 import com.forgeStackk.EduResolve.dto.ResetPasswordRequest;
 import com.forgeStackk.EduResolve.dto.ResetPasswordResponse;
 import com.forgeStackk.EduResolve.service.UserLoginService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,9 +29,13 @@ public class UserLoginController {
      * POST /api/auth/register
      */
     @PostMapping("/register")
-    public ResponseEntity<LoginResponse> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<LoginResponse> register(@Valid @RequestBody RegisterRequest request) {
         LoginResponse response = userLoginService.register(request);
-        return ResponseEntity.ok(response);
+        if (!response.isSuccess()) {
+            // Username/email already taken → 409 Conflict
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     /**
@@ -40,6 +45,9 @@ public class UserLoginController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
         LoginResponse response = userLoginService.login(request);
+        if (!response.isSuccess()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
         return ResponseEntity.ok(response);
     }
 

@@ -11,6 +11,9 @@ spring:
         jwt:
           issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8180/realms/eduresolve}
 
+keycloak:
+  jwk-set-uri: ${KEYCLOAK_JWK_SET_URI:}
+
   # ---------------------------------------------------------------------
   # PostgreSQL connection
   # Override any of these with environment variables (recommended for prod):

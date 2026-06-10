@@ -54,7 +54,9 @@ public class WebSecurityConfig {
                     "/api/auth/forgot-password", "/api/auth/reset-password",
                     "/api/auth/students-by-grade/**",
                     "/api/public/**", "/api/schools",
-                    "/actuator/**"
+                    "/actuator/**",
+                    // WebSocket upgrade requests — STOMP-level auth handles access control
+                    "/ws/**", "/ws/websocket/**"
                 ).permitAll()
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/v1/teacher-portal/**").hasAnyRole("TEACHER", "ADMIN")

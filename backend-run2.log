@@ -1,0 +1,641 @@
+[INFO] Scanning for projects...
+Downloading from central: https://repo.maven.apache.org/maven2/org/jacoco/maven-metadata.xml
+[WARNING] Could not transfer metadata org.jacoco/maven-metadata.xml from/to central (https://repo.maven.apache.org/maven2): (certificate_unknown) PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
+[INFO] 
+[INFO] ---------------------< com.forgeStackk:EduResolve >---------------------
+[INFO] Building  0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[WARNING] org.jacoco/maven-metadata.xml failed to transfer from https://repo.maven.apache.org/maven2 during a previous attempt. This failure was cached in the local repository and resolution will not be reattempted until the update interval of central has elapsed or updates are forced. Original error: Could not transfer metadata org.jacoco/maven-metadata.xml from/to central (https://repo.maven.apache.org/maven2): (certificate_unknown) PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
+[INFO] 
+[INFO] >>> spring-boot:4.0.5:run (default-cli) > test-compile @ EduResolve >>>
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (jacoco-prepare-agent) @ EduResolve ---
+[INFO] argLine set to -javaagent:C:\\Users\\erabh\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.12\\org.jacoco.agent-0.8.12-runtime.jar=destfile=C:\\Users\\erabh\\OneDrive\\Desktop\\learningNinjas\\EduResolve_Backend\\target\\jacoco.exec
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ EduResolve ---
+[INFO] Copying 2 resources from src\main\resources to target\classes
+[INFO] Copying 269 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (default-compile) @ EduResolve ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 338 source files with javac [debug parameters release 21] to target\classes
+[INFO] /C:/Users/erabh/OneDrive/Desktop/learningNinjas/EduResolve_Backend/src/main/java/com/forgeStackk/EduResolve/notes/controller/StudentNotesController.java: Some input files use or override a deprecated API.
+[INFO] /C:/Users/erabh/OneDrive/Desktop/learningNinjas/EduResolve_Backend/src/main/java/com/forgeStackk/EduResolve/notes/controller/StudentNotesController.java: Recompile with -Xlint:deprecation for details.
+[INFO] 
+[INFO] --- hibernate:7.2.7.Final:enhance (enhance) @ EduResolve ---
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\ai\controller\ChatController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\ai\dto\ChatRequest.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\ai\dto\ChatResponse.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\ai\dto\StreamChunk.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\ai\entity\AiConversation.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\ai\entity\AiConversationMessage.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\ai\repository\AiConversationMessageRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\ai\repository\AiConversationRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\ai\service\ConversationService.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\ai\service\OpenAiChatService.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\ai\service\RateLimitService.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\controller\StudentClassroomController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\dto\ClassroomEventPayload.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\dto\ClassroomMemberResponse.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\dto\ClassroomMessageDto$NoteSharePreview.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\dto\ClassroomMessageDto.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\dto\ClassroomResponse.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\dto\CreateGroupRequest.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\dto\GroupMemberDto.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\dto\ReactRequest.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\dto\ReportRequest.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\dto\SendMessageRequest.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\dto\StudyGroupResponse.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\dto\SubjectRoomResponse.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\dto\UpdateGroupRequest.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\entity\ClassroomMember.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\entity\ClassroomMessage.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\entity\ClassroomMessageReaction.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\entity\ClassroomPinnedMessage.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\entity\ClassroomReportedMessage.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\entity\ClassroomSubjectRoom.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\entity\StudentClassroom.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\entity\StudyGroup.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\entity\StudyGroupMember.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\repository\ClassroomMemberRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\repository\ClassroomMessageReactionRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\repository\ClassroomMessageRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\repository\ClassroomPinnedMessageRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\repository\ClassroomReportedMessageRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\repository\ClassroomSubjectRoomRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\repository\StudentClassroomRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\repository\StudyGroupMemberRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\repository\StudyGroupRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\service\ClassroomWebSocketService.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\service\StudentClassroomService.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\config\CacheConfig.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\config\JacksonConfig.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\config\NcertDataInitializer.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\config\SchedulingConfig.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\config\SecurityConfig.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\config\StartupChecks.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\config\WebMvcConfig.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\config\WebSecurityConfig.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\config\WebSocketConfig.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\AdminAttendanceController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\AdminAuditController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\AdminBroadcastController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\AdminClassController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\AdminDashboardController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\AdminFeeController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\AdminStudentController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\AdminTicketController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\BookmarkController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\ChapterController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\ComplaintController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\ContentBlockController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\ContentChunkController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\CurriculumController$1.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\CurriculumController$2.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\CurriculumController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\DoubtController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\DoubtSolverController$DoubtAnswerResponse.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\DoubtSolverController$DoubtSolverRequest.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\DoubtSolverController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\FeeController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\GlobalExceptionHandler.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\HomeworkController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\LeaderboardController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\MessageAttachmentController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\NcertBookController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\NcertChapterController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\NcertController$QuestionRequest.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\NcertController$QuizRequest.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\NcertController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\NcertUploadController$UploadResponse.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\NcertUploadController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\NoticeController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\parent\ParentInboxController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\ParentController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\PreviousYearQuestionController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\PublicStudentLookupController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\QuizController$QuizRequest.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\QuizController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\QuizQuestionController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\QuizResultController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\ReadingProgressController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\SchoolController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\SchoolEventController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\SearchController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\StreakController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\student\StudentDoubtController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\student\StudentInboxController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\student\StudentSubmissionController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\student\StudentTeacherPickerController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\StudentDocumentController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\StudentPerformanceController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\StudentProfileController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\SubjectController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\teacher\TeacherAttendanceController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\teacher\TeacherClassLookupController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\teacher\TeacherDoubtController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\teacher\TeacherHomeworkController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\teacher\TeacherMessagingController$ClassNoticeRequest.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\teacher\TeacherMessagingController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\teacher\TeacherNotificationController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\TopicController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\UserLoginController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\converter\JsonbConverter.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\admin\attendance\AtRiskStudentDto.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\admin\attendance\AttendancePolicyDto.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\admin\attendance\AuditEntryDto.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\admin\attendance\HeatmapDayDto.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\admin\attendance\InsightsDto$MonthlyTrendPointDto.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\admin\attendance\InsightsDto.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\admin\attendance\LeaveApplicationSummaryDto.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\admin\attendance\StudentAttendanceSummaryDto.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\admin\attendance\StudentDayRecordDto.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\admin\attendance\StudentDetailDto.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\AskDoubtRequest.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\BroadcastRequest.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\ComplaintStatusUpdate.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\CurriculumChapterDto.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\CurriculumSubjectDto.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\deserializer\StringOrListDeserializer.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\DoubtFeedbackRequest.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\ForgotPasswordRequest.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\ForgotPasswordResponse.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\LoginRequest.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\LoginResponse.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\NoticeRequest.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\RegisterRequest.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\ResetPasswordRequest.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\ResetPasswordResponse.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\student\AttendanceDayDto.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\student\StudentInboxItemDto$AttachmentInfo.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\student\StudentInboxItemDto.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\student\submission\DoubtMessageDto.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\student\submission\DoubtThreadDto.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\student\submission\HomeworkSubmissionDto.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\student\submission\SubmissionAttachmentDto.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\student\submission\TeacherPickerDto.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\teacher\AttendanceRecordInput.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\teacher\AttendanceRecordResponse.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\teacher\AttendanceSummaryDto.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\teacher\ClassResponse.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\teacher\GenerateReportRequest.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\teacher\GenerateReportResponse.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\teacher\InboxNotificationPayload.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\teacher\MarkAttendanceRequest.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\teacher\MarkAttendanceResponse.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\teacher\MessageSummaryResponse.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\teacher\SendMessageResponse.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\teacher\SendReportRequest.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\teacher\StudentAttendanceSummary.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\teacher\StudentOptionDto.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\teacher\StudentWithParentResponse.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\teacher\SubjectResponse.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\EduResolveApplication.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\AdminProfile.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\AtRiskSnapshot.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\AttendanceAnomaly.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\AttendanceAudit.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\AttendancePolicy.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\AuditLog.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\Bookmark$TargetType.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\Bookmark.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\Broadcast.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\Chapter.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\Complaint$Status.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\Complaint.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\ComplaintReply.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\ContentBlock$BlockType.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\ContentBlock.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\ContentChunk$ChunkType.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\ContentChunk.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\Doubt.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\DoubtCache.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\EventRsvp.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\Fee$Status.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\Fee.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\Homework.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\LeaveApplication.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\NcertBook.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\NcertChapter.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\Notice.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\ParentsProfile.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\ParentTeacherMessage.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\PreviousYearQuestion$Difficulty.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\PreviousYearQuestion.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\QuestionBank$Difficulty.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\QuestionBank.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\QuizQuestion$Difficulty.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\QuizQuestion.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\QuizResult.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\ReadingProgress.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\ScheduledJobLog.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\SchoolEvent.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\student\DoubtMessage.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\student\DoubtMessageAttachment.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\student\DoubtThread.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\student\HomeworkSubmission.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\student\HomeworkSubmissionAttachment.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\StudentDocument.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\StudentPerformance.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\StudentProfile.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\Subject.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\teacher\Attendance.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\teacher\AttendanceReport.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\teacher\ClassRoom.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\teacher\Message.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\teacher\MessageAttachment.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\teacher\Parent.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\teacher\ParentInbox.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\teacher\ReadReceipt.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\teacher\Student.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\teacher\StudentInbox.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\teacher\Teacher.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\teacher\TeacherNotification.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\teacher\TeacherSubjectMapping.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\TeacherProfile.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\Topic.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\UserLogin.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\enums\AttachmentFileType.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\enums\AttendanceStatus.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\enums\InboxReadStatus.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\enums\MessageCategory.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\enums\MessageContentType.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\enums\ReasonCode.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\enums\RecipientType.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\enums\ReportGeneratedBy.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\enums\ReportStatus.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\enums\StudentStatus.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\enums\TeacherStatus.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\notes\controller\StudentNotesController.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\notes\dto\GenerateNoteRequest.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\notes\dto\NoteDetailResponse.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\notes\dto\NoteListItem.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\notes\dto\NotePreferenceDto.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\notes\dto\NoteStatsResponse$SubjectCount.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\notes\dto\NoteStatsResponse.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\notes\dto\NoteVersionDto.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\notes\dto\PdfStatusResponse.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\notes\dto\PdfUploadResponse.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\notes\dto\ShareToClassroomRequest.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\notes\dto\UpdateNoteRequest.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\notes\entity\NoteRevisionLog.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\notes\entity\NoteVersion.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\notes\entity\PdfExtractionJob.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\notes\entity\StudentNote.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\notes\entity\StudentNotePreference.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\notes\repository\NoteRevisionLogRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\notes\repository\NoteVersionRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\notes\repository\PdfExtractionJobRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\notes\repository\StudentNotePreferenceRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\notes\repository\StudentNoteRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\notes\service\NotesAiService$1.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\notes\service\NotesAiService.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\notes\service\NotesArchiveJob.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\notes\service\PdfExtractionService.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\notes\service\StudentNotesService.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\AdminProfileRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\AtRiskSnapshotRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\AttendanceAnomalyRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\AttendanceAuditRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\AttendancePolicyRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\AuditLogRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\BookmarkRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\BroadcastRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\ChapterRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\ComplaintReplyRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\ComplaintRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\ContentBlockRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\ContentChunkRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\DoubtCacheRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\DoubtRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\EventRsvpRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\FeeRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\HomeworkRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\LeaveApplicationRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\NcertBookRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\NcertChapterRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\NoticeRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\ParentsProfileRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\ParentTeacherMessageRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\PreviousYearQuestionRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\QuestionBankRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\QuizQuestionRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\QuizResultRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\ReadingProgressRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\ScheduledJobLogRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\SchoolEventRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\student\DoubtMessageAttachmentRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\student\DoubtMessageRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\student\DoubtThreadRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\student\HomeworkSubmissionAttachmentRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\student\HomeworkSubmissionRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\StudentDocumentRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\StudentPerformanceRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\StudentProfileRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\SubjectRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\teacher\AttendanceReportRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\teacher\AttendanceRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\teacher\ClassRoomRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\teacher\MessageAttachmentRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\teacher\MessageRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\teacher\ParentInboxRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\teacher\ParentRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\teacher\ReadReceiptRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\teacher\StudentInboxRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\teacher\StudentRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\teacher\TeacherNotificationRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\teacher\TeacherRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\teacher\TeacherSubjectMappingRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\TeacherProfileRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\TopicRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\repository\UserLoginRepository.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\scheduler\AttendanceReportScheduler.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\security\AdminAuthHelper.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\security\JwtAuthenticationFilter.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\security\JwtUtil.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\security\KeycloakJwtConverter.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\security\ParentPortalAuthHelper.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\security\StudentPortalAuthHelper.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\security\TeacherPortalAuthHelper.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\service\admin\AtRiskScanService$ScanResult.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\service\admin\AtRiskScanService.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\service\admin\AttendanceAdminService.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\service\AiService$1.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\service\AiService$ChatResponse$Choice.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\service\AiService$ChatResponse$Message.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\service\AiService$ChatResponse.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\service\AiService.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\service\ContentBlockService.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\service\GitHubApiService$GitHubBookInfo.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\service\GitHubApiService.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\service\ImageService.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\service\NcertBookService.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\service\NcertChapterService.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\service\OpenAIService$ChatResponse$Choice.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\service\OpenAIService$ChatResponse$Message.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\service\OpenAIService$ChatResponse.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\service\OpenAIService$QuizQuestion.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\service\OpenAIService$VisualizationData.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\service\OpenAIService.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\service\parent\ParentPortalService.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\service\PdfParsingService$PdfMetadata.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\service\PdfParsingService.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\service\student\DoubtService.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\service\student\HomeworkSubmissionService.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\service\student\StudentPortalService.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\service\teacher\AttendancePdfService$1.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\service\teacher\AttendancePdfService.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\service\teacher\AttendanceService.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\service\teacher\ClassLookupService.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\service\teacher\LocalReportStorageService.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\service\teacher\MessageService$1.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\service\teacher\MessageService.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\service\teacher\NotificationService.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\service\teacher\ReportStorageService.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\service\UserLoginService.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\startup\ClassroomSeeder.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\util\StringListConverter$1.class
+[INFO] Added file to source set: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\util\StringListConverter.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\ai\controller\ChatController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\ai\dto\ChatRequest.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\ai\dto\ChatResponse.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\ai\dto\StreamChunk.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\ai\entity\AiConversation.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\ai\entity\AiConversationMessage.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\ai\repository\AiConversationMessageRepository.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\ai\repository\AiConversationRepository.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\ai\service\ConversationService.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\ai\service\OpenAiChatService.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\ai\service\RateLimitService.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\controller\StudentClassroomController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\dto\ClassroomEventPayload.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\dto\ClassroomMemberResponse.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\dto\ClassroomMessageDto$NoteSharePreview.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\dto\ClassroomMessageDto.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\dto\ClassroomResponse.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\dto\CreateGroupRequest.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\dto\GroupMemberDto.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\dto\ReactRequest.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\dto\ReportRequest.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\dto\SendMessageRequest.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\dto\StudyGroupResponse.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\dto\SubjectRoomResponse.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\dto\UpdateGroupRequest.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\entity\ClassroomMember.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\entity\ClassroomMessage.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\entity\ClassroomMessageReaction.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\entity\ClassroomPinnedMessage.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\entity\ClassroomReportedMessage.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\entity\ClassroomSubjectRoom.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\entity\StudentClassroom.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\entity\StudyGroup.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\entity\StudyGroupMember.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\repository\ClassroomMemberRepository.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\repository\ClassroomMessageReactionRepository.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\repository\ClassroomMessageRepository.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\repository\ClassroomPinnedMessageRepository.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\repository\ClassroomReportedMessageRepository.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\repository\ClassroomSubjectRoomRepository.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\repository\StudentClassroomRepository.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\repository\StudyGroupMemberRepository.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\repository\StudyGroupRepository.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\service\ClassroomWebSocketService.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\classroom\service\StudentClassroomService.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\config\CacheConfig.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\config\JacksonConfig.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\config\NcertDataInitializer.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\config\SchedulingConfig.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\config\SecurityConfig.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\config\StartupChecks.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\config\WebMvcConfig.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\config\WebSecurityConfig.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\config\WebSocketConfig.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\AdminAttendanceController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\AdminAuditController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\AdminBroadcastController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\AdminClassController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\AdminDashboardController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\AdminFeeController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\AdminStudentController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\AdminTicketController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\BookmarkController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\ChapterController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\ComplaintController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\ContentBlockController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\ContentChunkController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\CurriculumController$1.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\CurriculumController$2.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\CurriculumController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\DoubtController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\DoubtSolverController$DoubtAnswerResponse.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\DoubtSolverController$DoubtSolverRequest.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\DoubtSolverController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\FeeController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\GlobalExceptionHandler.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\HomeworkController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\LeaderboardController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\MessageAttachmentController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\NcertBookController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\NcertChapterController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\NcertController$QuestionRequest.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\NcertController$QuizRequest.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\NcertController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\NcertUploadController$UploadResponse.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\NcertUploadController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\NoticeController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\parent\ParentInboxController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\ParentController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\PreviousYearQuestionController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\PublicStudentLookupController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\QuizController$QuizRequest.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\QuizController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\QuizQuestionController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\QuizResultController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\ReadingProgressController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\SchoolController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\SchoolEventController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\SearchController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\StreakController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\student\StudentDoubtController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\student\StudentInboxController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\student\StudentSubmissionController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\student\StudentTeacherPickerController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\StudentDocumentController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\StudentPerformanceController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\StudentProfileController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\SubjectController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\teacher\TeacherAttendanceController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\teacher\TeacherClassLookupController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\teacher\TeacherDoubtController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\teacher\TeacherHomeworkController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\teacher\TeacherMessagingController$ClassNoticeRequest.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\teacher\TeacherMessagingController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\teacher\TeacherNotificationController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\TopicController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\controller\UserLoginController.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\converter\JsonbConverter.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\admin\attendance\AtRiskStudentDto.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\admin\attendance\AttendancePolicyDto.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\admin\attendance\AuditEntryDto.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\admin\attendance\HeatmapDayDto.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\admin\attendance\InsightsDto$MonthlyTrendPointDto.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\admin\attendance\InsightsDto.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\admin\attendance\LeaveApplicationSummaryDto.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\admin\attendance\StudentAttendanceSummaryDto.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\admin\attendance\StudentDayRecordDto.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\admin\attendance\StudentDetailDto.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\AskDoubtRequest.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\BroadcastRequest.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\ComplaintStatusUpdate.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\CurriculumChapterDto.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\CurriculumSubjectDto.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\deserializer\StringOrListDeserializer.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\DoubtFeedbackRequest.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\ForgotPasswordRequest.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\ForgotPasswordResponse.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\LoginRequest.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\LoginResponse.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\NoticeRequest.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\RegisterRequest.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\ResetPasswordRequest.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\ResetPasswordResponse.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\student\AttendanceDayDto.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\student\StudentInboxItemDto$AttachmentInfo.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\student\StudentInboxItemDto.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\student\submission\DoubtMessageDto.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\student\submission\DoubtThreadDto.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\student\submission\HomeworkSubmissionDto.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\student\submission\SubmissionAttachmentDto.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\student\submission\TeacherPickerDto.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\teacher\AttendanceRecordInput.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\teacher\AttendanceRecordResponse.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\teacher\AttendanceSummaryDto.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\teacher\ClassResponse.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\teacher\GenerateReportRequest.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\teacher\GenerateReportResponse.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\teacher\InboxNotificationPayload.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\teacher\MarkAttendanceRequest.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\teacher\MarkAttendanceResponse.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\teacher\MessageSummaryResponse.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\teacher\SendMessageResponse.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\teacher\SendReportRequest.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\teacher\StudentAttendanceSummary.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\teacher\StudentOptionDto.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\teacher\StudentWithParentResponse.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\dto\teacher\SubjectResponse.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\EduResolveApplication.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\AdminProfile.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\AtRiskSnapshot.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\AttendanceAnomaly.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\AttendanceAudit.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\AttendancePolicy.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\AuditLog.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\Bookmark$TargetType.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\Bookmark.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\Broadcast.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\Chapter.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\Complaint$Status.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\Complaint.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\ComplaintReply.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\ContentBlock$BlockType.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\ContentBlock.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\ContentChunk$ChunkType.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\ContentChunk.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\Doubt.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\DoubtCache.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\EventRsvp.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\Fee$Status.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\Fee.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\Homework.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\LeaveApplication.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\NcertBook.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\NcertChapter.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\Notice.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\ParentsProfile.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\ParentTeacherMessage.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\PreviousYearQuestion$Difficulty.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\PreviousYearQuestion.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\QuestionBank$Difficulty.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\QuestionBank.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\QuizQuestion$Difficulty.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\QuizQuestion.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\QuizResult.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\ReadingProgress.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\ScheduledJobLog.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\SchoolEvent.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\student\DoubtMessage.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\student\DoubtMessageAttachment.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\student\DoubtThread.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\student\HomeworkSubmission.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\student\HomeworkSubmissionAttachment.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\StudentDocument.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\StudentPerformance.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\StudentProfile.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\Subject.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\teacher\Attendance.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\teacher\AttendanceReport.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\teacher\ClassRoom.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\teacher\Message.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\teacher\MessageAttachment.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\teacher\Parent.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\teacher\ParentInbox.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\teacher\ReadReceipt.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\teacher\Student.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\teacher\StudentInbox.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\teacher\Teacher.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\teacher\TeacherNotification.class
+[INFO] Succesfully discovered types for classes in file: C:\Users\erabh\OneDrive\Desktop\learningNinjas\EduResolve_Backend\target\classes\com\forgeStackk\EduResolve\entity\teacher\TeacherSubjectMapping.class
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  16.489 s
+[INFO] Finished at: 2026-06-03T21:08:02+05:30
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.hibernate.orm:hibernate-maven-plugin:7.2.7.Final:enhance (enhance) on project EduResolve: Execution enhance of goal org.hibernate.orm:hibernate-maven-plugin:7.2.7.Final:enhance failed: Supplied byte array is too short to be a class file with 0 byte -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/PluginExecutionException
