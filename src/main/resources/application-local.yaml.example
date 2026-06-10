@@ -1,0 +1,7 @@
+# Copy this file to application-local.yaml and fill in real values.
+# application-local.yaml is gitignored — never commit it.
+# Spring Boot activates this profile with: --spring.profiles.active=local
+
+openai:
+  api:
+    key: sk-proj-YOUR_REAL_KEY_HERE

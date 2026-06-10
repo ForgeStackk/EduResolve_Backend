@@ -1,0 +1,464 @@
+{
+  "info": {
+    "name": "EduResolve API",
+    "description": "Complete API collection for the EduResolve Spring Boot backend.\n\n**Base URL variable:** `{{baseUrl}}` (default `http://localhost:8080`).\n\n**Auth note:** Endpoints currently permit-all under `/api/**`. If you add JWT issuance later, capture the token from `/api/auth/login` and Postman will auto-attach it via the collection-level Authorization tab.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl",       "value": "http://localhost:8080", "type": "string" },
+    { "key": "homeworkId",    "value": "1", "type": "string" },
+    { "key": "doubtId",       "value": "1", "type": "string" },
+    { "key": "complaintId",   "value": "1", "type": "string" },
+    { "key": "feeId",         "value": "1", "type": "string" },
+    { "key": "eventId",       "value": "1", "type": "string" },
+    { "key": "questionId",    "value": "1", "type": "string" },
+    { "key": "studentId",     "value": "1", "type": "string" },
+    { "key": "userId",        "value": "1", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Actuator Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/actuator/health", "host": ["{{baseUrl}}"], "path": ["actuator","health"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"test.user@eduresolve.test\",\n  \"password\": \"Pass@1234\",\n  \"role\": \"STUDENT\",\n  \"className\": \"10A\",\n  \"phoneNumber\": \"+91-9000099999\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/auth/register", "host": ["{{baseUrl}}"], "path": ["api","auth","register"] }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@eduresolve.test\",\n  \"password\": \"Admin@123\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api","auth","login"] }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/auth/logout", "host": ["{{baseUrl}}"], "path": ["api","auth","logout"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Homework",
+      "item": [
+        {
+          "name": "List Homework",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/homework?className=10A",
+              "host": ["{{baseUrl}}"], "path": ["api","homework"],
+              "query": [
+                { "key": "className", "value": "10A", "description": "optional filter" },
+                { "key": "teacherId", "value": "2", "disabled": true, "description": "optional filter" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Homework by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/homework/{{homeworkId}}", "host": ["{{baseUrl}}"], "path": ["api","homework","{{homeworkId}}"] }
+          }
+        },
+        {
+          "name": "Create Homework",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Trigonometry Worksheet\",\n  \"description\": \"Solve problems 1-15 of chapter 8.\",\n  \"dueDate\": \"2026-05-10\",\n  \"hasAttachment\": false,\n  \"teacherId\": 2,\n  \"className\": \"10A\",\n  \"subject\": \"Mathematics\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/homework", "host": ["{{baseUrl}}"], "path": ["api","homework"] }
+          }
+        },
+        {
+          "name": "Update Homework",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Trigonometry Worksheet (revised)\",\n  \"description\": \"Solve problems 1-15 and the bonus question.\",\n  \"dueDate\": \"2026-05-12\",\n  \"hasAttachment\": true,\n  \"className\": \"10A\",\n  \"subject\": \"Mathematics\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/homework/{{homeworkId}}", "host": ["{{baseUrl}}"], "path": ["api","homework","{{homeworkId}}"] }
+          }
+        },
+        {
+          "name": "Delete Homework",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/homework/{{homeworkId}}", "host": ["{{baseUrl}}"], "path": ["api","homework","{{homeworkId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Doubts",
+      "item": [
+        {
+          "name": "List Doubts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/doubts",
+              "host": ["{{baseUrl}}"], "path": ["api","doubts"],
+              "query": [
+                { "key": "studentId", "value": "9", "disabled": true, "description": "optional filter" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Ask Doubt",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"studentId\": 9,\n  \"query\": \"Why does ice float on water?\",\n  \"subject\": \"Science\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/doubts/ask", "host": ["{{baseUrl}}"], "path": ["api","doubts","ask"] }
+          }
+        },
+        {
+          "name": "Submit Doubt Feedback",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isHelpful\": true\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/doubts/{{doubtId}}/feedback", "host": ["{{baseUrl}}"], "path": ["api","doubts","{{doubtId}}","feedback"] }
+          }
+        },
+        {
+          "name": "Delete Doubt",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/doubts/{{doubtId}}", "host": ["{{baseUrl}}"], "path": ["api","doubts","{{doubtId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Complaints",
+      "item": [
+        {
+          "name": "List Complaints",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/complaints",
+              "host": ["{{baseUrl}}"], "path": ["api","complaints"],
+              "query": [
+                { "key": "parentId", "value": "5", "disabled": true, "description": "optional filter" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Complaint by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/complaints/{{complaintId}}", "host": ["{{baseUrl}}"], "path": ["api","complaints","{{complaintId}}"] }
+          }
+        },
+        {
+          "name": "Create Complaint",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"parentId\": 5,\n  \"category\": \"Transport\",\n  \"subject\": \"Bus driver running late\",\n  \"description\": \"The driver of route 42 has been arriving 20 mins late this week.\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/complaints", "host": ["{{baseUrl}}"], "path": ["api","complaints"] }
+          }
+        },
+        {
+          "name": "Update Complaint Status",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"InReview\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Allowed status values: `Pending`, `InReview`, `Resolved`.",
+            "url": { "raw": "{{baseUrl}}/api/complaints/{{complaintId}}/status", "host": ["{{baseUrl}}"], "path": ["api","complaints","{{complaintId}}","status"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Fees",
+      "item": [
+        {
+          "name": "List Fees",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/fees",
+              "host": ["{{baseUrl}}"], "path": ["api","fees"],
+              "query": [
+                { "key": "status",    "value": "Unpaid", "disabled": true, "description": "Paid | Unpaid" },
+                { "key": "studentId", "value": "9",      "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Fee Summary",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/fees/summary", "host": ["{{baseUrl}}"], "path": ["api","fees","summary"] }
+          }
+        },
+        {
+          "name": "Create Fee",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"studentId\": 9,\n  \"studentName\": \"Marcus Thomas\",\n  \"className\": \"10A\",\n  \"phone\": \"+91-9000001001\",\n  \"amount\": 2450.00,\n  \"dueDate\": \"2026-05-30\",\n  \"status\": \"Unpaid\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/fees", "host": ["{{baseUrl}}"], "path": ["api","fees"] }
+          }
+        },
+        {
+          "name": "Update Fee",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 2500.00,\n  \"dueDate\": \"2026-06-15\",\n  \"status\": \"Paid\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/fees/{{feeId}}", "host": ["{{baseUrl}}"], "path": ["api","fees","{{feeId}}"] }
+          }
+        },
+        {
+          "name": "Send Fee Reminder",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/fees/{{feeId}}/remind", "host": ["{{baseUrl}}"], "path": ["api","fees","{{feeId}}","remind"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notices",
+      "item": [
+        {
+          "name": "List Notices",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/notices", "host": ["{{baseUrl}}"], "path": ["api","notices"] }
+          }
+        },
+        {
+          "name": "Send Notice",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"targetAudience\": \"All Parents (Grade 9-12)\",\n  \"message\": \"Holiday on 1st June. School will reopen on 2nd June.\",\n  \"channels\": [\"whatsapp\", \"sms\"]\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/notices", "host": ["{{baseUrl}}"], "path": ["api","notices"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Events",
+      "item": [
+        {
+          "name": "List Events",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/events", "host": ["{{baseUrl}}"], "path": ["api","events"] }
+          }
+        },
+        {
+          "name": "Create Event",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Robotics Club Open House\",\n  \"location\": \"Lab 3\",\n  \"eventDate\": \"2026-06-12\",\n  \"eventTime\": \"02:00 PM\",\n  \"attendeesCount\": 50\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/events", "host": ["{{baseUrl}}"], "path": ["api","events"] }
+          }
+        },
+        {
+          "name": "Delete Event",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/events/{{eventId}}", "host": ["{{baseUrl}}"], "path": ["api","events","{{eventId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Quiz Questions",
+      "item": [
+        {
+          "name": "List Questions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/quiz-questions",
+              "host": ["{{baseUrl}}"], "path": ["api","quiz-questions"],
+              "query": [
+                { "key": "subject", "value": "Science",            "disabled": true },
+                { "key": "chapter", "value": "Light - Reflection", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Question",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"subject\": \"Science\",\n  \"chapter\": \"Acids and Bases\",\n  \"text\": \"Which of the following is a strong acid?\",\n  \"options\": [\n    { \"id\": \"o1\", \"text\": \"HCl\" },\n    { \"id\": \"o2\", \"text\": \"CH3COOH\" },\n    { \"id\": \"o3\", \"text\": \"H2CO3\" }\n  ],\n  \"correctOptionId\": \"o1\",\n  \"explanation\": \"HCl ionises completely in water, making it a strong acid.\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/quiz-questions", "host": ["{{baseUrl}}"], "path": ["api","quiz-questions"] }
+          }
+        },
+        {
+          "name": "Delete Question",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/quiz-questions/{{questionId}}", "host": ["{{baseUrl}}"], "path": ["api","quiz-questions","{{questionId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Students",
+      "item": [
+        {
+          "name": "List Students",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/students",
+              "host": ["{{baseUrl}}"], "path": ["api","students"],
+              "query": [
+                { "key": "className", "value": "10A", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Student by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/students/{{studentId}}", "host": ["{{baseUrl}}"], "path": ["api","students","{{studentId}}"] }
+          }
+        },
+        {
+          "name": "Get Student by User ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/students/by-user/{{userId}}", "host": ["{{baseUrl}}"], "path": ["api","students","by-user","{{userId}}"] }
+          }
+        },
+        {
+          "name": "Create Student Profile",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": 9,\n  \"name\": \"Marcus Thomas\",\n  \"initials\": \"MT\",\n  \"color\": \"#667eea\",\n  \"engagement\": 92,\n  \"grade\": \"A+\",\n  \"status\": \"excellent\",\n  \"className\": \"10A\",\n  \"streakDays\": 12,\n  \"experiencePoints\": 450,\n  \"topPercentage\": 3\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/students", "host": ["{{baseUrl}}"], "path": ["api","students"] }
+          }
+        },
+        {
+          "name": "Update Student Profile",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Marcus Thomas\",\n  \"engagement\": 95,\n  \"grade\": \"A+\",\n  \"status\": \"excellent\",\n  \"streakDays\": 13,\n  \"experiencePoints\": 480,\n  \"topPercentage\": 2\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/students/{{studentId}}", "host": ["{{baseUrl}}"], "path": ["api","students","{{studentId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Dashboard Aggregates",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/admin/dashboard", "host": ["{{baseUrl}}"], "path": ["api","admin","dashboard"] }
+          }
+        }
+      ]
+    }
+  ]
+}

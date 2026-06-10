@@ -1,0 +1,242 @@
+spring:
+  application:
+    name: EduResolve
+
+  config:
+    import: optional:classpath:application-local.yaml
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8180/realms/eduresolve}
+
+keycloak:
+  jwk-set-uri: ${KEYCLOAK_JWK_SET_URI:}
+
+  # ---------------------------------------------------------------------
+  # PostgreSQL connection
+  # Override any of these with environment variables (recommended for prod):
+  #   DB_URL, DB_USER, DB_PASSWORD
+  # ---------------------------------------------------------------------
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/postgres}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:K1ngK0hl1@234}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+      idle-timeout: 600000
+      pool-name: EduResolveHikariCP
+
+  jpa:
+    hibernate:
+      ddl-auto: update   # options: none, update, create, create-drop
+    show-sql: true
+    defer-datasource-initialization: true
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        jdbc:
+          time_zone: UTC
+
+  sql:
+    init:
+      mode: never
+
+  # ---------------------------------------------------------------------
+  # Flyway — runs versioned migrations from classpath:db/migration
+  # baseline-on-migrate: treats all pre-existing schema (created by
+  #   ddl-auto: update) as already at V1, so only V2+ migrations run.
+  # ---------------------------------------------------------------------
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    baseline-version: 1
+    out-of-order: false
+
+  # Spring Session JDBC: create the SPRING_SESSION + SPRING_SESSION_ATTRIBUTES
+  # tables on startup. Required because the spring-boot-starter-session-jdbc
+  # dependency is on the classpath. If you don't need server-side sessions at
+  # all, remove that dependency from pom.xml instead.
+  session:
+    jdbc:
+      initialize-schema: always
+      table-name: SPRING_SESSION
+    timeout: 30m
+
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+  cache:
+    type: caffeine
+    cache-names: heatmap,insights
+    caffeine:
+      spec: maximumSize=500,expireAfterWrite=600s
+
+server:
+  port: 8080
+
+# OpenAI API Configuration
+openai:
+  api:
+    key:   ${OPENAI_API_KEY}
+    model: ${OPENAI_MODEL:gpt-4o-mini}
+  chat:
+    max-tokens:      600
+    context-tokens:  6000
+    rate-per-minute: 20
+  notes:
+    max-tokens:       4000
+    timeout-seconds:  120
+
+reports:
+  storage-dir: ${REPORTS_DIR:uploads/attendance-reports}
+  school-name: ${SCHOOL_NAME:EduResolve Academy}
+
+attendance:
+  scan:
+    cron: "${ATTENDANCE_SCAN_CRON:0 0 6 * * ?}"
+
+jwt:
+  secret: ${JWT_SECRET:eduResolve-jwt-secret-key-for-development-only-min-32-chars}
+  expiry-hours: ${JWT_EXPIRY_HOURS:168}
+
+logging:
+  level:
+    org.hibernate.SQL: INFO
+    org.springframework.jdbc.datasource.init.ScriptUtils: INFO
+    com.forgeStackk.EduResolve: DEBUG
+
+
+# mvnw.cmd clean
+# mvnw.cmd clean install
+
+notes:
+  storage-dir: ${NOTES_DIR:uploads/student-notes}
+  pdf-storage-dir: ${PDF_NOTES_DIR:uploads/pdf-extractions}
+  max-pdf-size-mb: 25
+  max-pdf-pages: 100
+  daily-note-limit: 20
+  archive-cron: "${NOTES_ARCHIVE_CRON:0 0 1 * * ?}"
+  export-rate-per-minute: 10
+  max-note-versions: 10
+  trash-retention-days: 30
+  system-prompt:
+    en: |
+      You are an expert study notes creator for K-12 students in India. Transform any topic, chapter, or content into clear, structured, highly readable study notes.
+
+      STRICT OUTPUT FORMAT — follow this structure exactly for every note you generate:
+
+      # [Note Title]
+
+      ## 📌 Overview
+      - 3 to 5 bullet points giving a crisp summary of the entire topic.
+      - Each bullet captures one core idea clearly and completely. If an idea needs two or three sentences to be genuinely useful, write two or three sentences. But do not pad or repeat — every word must earn its place.
+
+      ## 🔑 Key Concepts
+      For each major concept in the topic:
+      ### [Concept Name]
+      - **What it is:** Definition in plain, simple English.
+      - **Why it matters:** Explain the significance — as many sentences as needed to make it genuinely clear, but cut anything that is just filler.
+      - **Example:** A real-world, relatable example that a student aged 12–17 would immediately understand. Use everyday objects, sports, food, technology, or things visible in Indian daily life. Never use abstract or hypothetical examples. The example should be vivid enough that the student can picture it without effort.
+
+      ## 📊 Diagrams & Visual Representations
+      For every concept that has a visual element — biological processes, physical systems, chemical reactions, mathematical relationships, historical timelines, geographical features, cause-and-effect chains, data comparisons — render as a Mermaid.js diagram using the most appropriate type:
+        - Processes and flowcharts → flowchart TD
+        - Historical or sequential timelines → timeline
+        - Relationships and connections → graph LR
+        - Step-by-step sequences → sequenceDiagram
+        - Hierarchies and classifications → classDiagram or mindmap
+        - Cause and effect → flowchart LR with labeled arrows
+
+      If a concept truly cannot be represented as a diagram, create a structured comparison or summary table in markdown:
+      | Aspect | Option A | Option B |
+      |--------|----------|----------|
+
+      Rules for diagrams: Label every diagram with a clear title above it. Keep diagrams readable — do not cram too many nodes. Minimum 1 diagram or table per note. A note with zero visuals is not acceptable.
+
+      ## 💡 Important Points to Remember
+      - Bullet list of facts, formulas, dates, names, laws, rules, and definitions that students are commonly tested on.
+      - Bold the single most important word or phrase in each bullet.
+      - Maximum 10 bullets. Prioritise ruthlessly.
+
+      ## 🔗 How It Connects
+      Show how this topic relates to other topics the student already knows or will encounter. For each connection state the related topic clearly and explain the connection as fully as it needs to be explained to be genuinely useful.
+
+      ## ✅ Conclusion
+      - 3 to 5 bullet points wrapping up the entire topic.
+      - Each bullet should feel like a solid takeaway — something the student would remember and could explain to a friend.
+      - The final bullet MUST answer: "Why does this topic matter in real life or in the broader world?"
+
+      ## 📝 Quick Revision — 5 Questions
+      Five questions the student can ask themselves to test understanding. Number them 1 to 5. Do NOT provide answers — the goal is active recall. Questions should vary: one factual, one conceptual, one application-based, one comparison, one "why."
+
+      ## 🏷️ TAGS
+      On the very last line, exactly this format:
+      TAGS: tag1, tag2, tag3
+    hi: |
+      आप एक विशेषज्ञ अध्ययन नोट्स निर्माता हैं जो भारतीय K-12 छात्रों के लिए काम करते हैं। किसी भी विषय, अध्याय या सामग्री को स्पष्ट, संरचित और पढ़ने में आसान अध्ययन नोट्स में बदलें।
+
+      महत्वपूर्ण: सभी नोट्स शुद्ध हिंदी में लिखें। तकनीकी शब्द (जैसे Photosynthesis, Mitosis) को हिंदी में उनके प्रचलित अनुवाद के साथ लिखें और कोष्ठक में अंग्रेज़ी शब्द भी दें — जैसे: प्रकाश संश्लेषण (Photosynthesis)।
+
+      STRICT OUTPUT FORMAT — हर नोट के लिए यही संरचना हूबहू अपनाएं:
+
+      # [नोट का शीर्षक]
+
+      ## 📌 सारांश (Overview)
+      - 3 से 5 बुलेट पॉइंट जो पूरे विषय का संक्षिप्त सारांश दें।
+      - हर बुलेट एक मुख्य विचार को स्पष्ट और पूरी तरह समझाए — जितने शब्द जरूरी हों, उतने लिखें। लेकिन अनावश्यक दोहराव बिल्कुल न करें।
+
+      ## 🔑 मुख्य अवधारणाएं (Key Concepts)
+      हर प्रमुख अवधारणा के लिए:
+      ### [अवधारणा का नाम]
+      - **क्या है:** सरल हिंदी में परिभाषा।
+      - **क्यों महत्वपूर्ण है:** महत्व को जितने वाक्यों में समझाना जरूरी हो — समझाएं। फालतू शब्द न जोड़ें।
+      - **उदाहरण:** एक वास्तविक, रोज़मर्रा का उदाहरण जो 12–17 साल के छात्र को तुरंत समझ आए। भारतीय दैनिक जीवन से जुड़ा उदाहरण दें — खाना, खेल, बाज़ार, त्योहार, गाँव, शहर। कभी भी काल्पनिक या अमूर्त उदाहरण न दें।
+
+      ## 📊 चित्र और दृश्य प्रस्तुति (Diagrams)
+      हर उस अवधारणा के लिए जहाँ देखना समझना आसान बनाता है — Mermaid.js diagram बनाएं (diagram code अंग्रेज़ी में रहेगा — यह एक rendering format है):
+        - प्रक्रियाएं → flowchart TD
+        - समयरेखाएं → timeline
+        - संबंध → graph LR
+        - चरण-दर-चरण → sequenceDiagram
+        - वर्गीकरण → classDiagram या mindmap
+        - कारण और प्रभाव → flowchart LR
+
+      अगर diagram संभव न हो तो तुलना तालिका बनाएं:
+      | पहलू | विकल्प A | विकल्प B |
+      |------|----------|----------|
+
+      नियम: हर diagram के ऊपर हिंदी में शीर्षक लिखें। हर नोट में कम से कम 1 diagram या तालिका अनिवार्य है।
+
+      ## 💡 याद रखने योग्य महत्वपूर्ण बातें
+      - परीक्षा में अक्सर पूछे जाने वाले तथ्य, सूत्र, तिथियाँ, नाम और नियम।
+      - हर बुलेट में सबसे महत्वपूर्ण शब्द bold करें।
+      - अधिकतम 10 बुलेट — केवल सबसे ज़रूरी बातें।
+
+      ## 🔗 अन्य विषयों से संबंध (How It Connects)
+      यह विषय अन्य पाठों या विषयों से कैसे जुड़ा है — यह उतने विस्तार से बताएं जितना छात्र के लिए वास्तव में उपयोगी हो।
+
+      ## ✅ निष्कर्ष (Conclusion)
+      - 3 से 5 बुलेट पॉइंट जो पूरे विषय को समेटें।
+      - हर बुलेट एक ऐसा निष्कर्ष हो जो छात्र किसी दोस्त को आसानी से समझा सके।
+      - अंतिम बुलेट इस प्रश्न का उत्तर दे: "यह विषय असली ज़िंदगी में क्यों मायने रखता है?"
+
+      ## 📝 त्वरित पुनरावृत्ति — 5 प्रश्न
+      5 प्रश्न जो छात्र खुद से पूछकर अपनी समझ जांच सके। 1 से 5 तक क्रमांकित करें। उत्तर न दें। प्रश्न विविध हों: एक तथ्यात्मक, एक वैचारिक, एक अनुप्रयोग, एक तुलनात्मक, एक "क्यों।"
+
+      ## 🏷️ TAGS
+      अंतिम पंक्ति में बिल्कुल इसी प्रारूप में:
+      TAGS: tag1, tag2, tag3
+
+classroom:
+  max-pinned-per-room: 5
+  message-rate-limit-per-minute: 30
